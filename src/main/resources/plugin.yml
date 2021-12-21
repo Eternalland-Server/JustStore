@@ -1,0 +1,18 @@
+name: JustStore
+main: net.sakuragame.eternal.juststore.JustStore
+version: ${project.version}
+author: 'Justwei'
+api-version: '1.13'
+depend:
+  - MegumiLib
+  - DragonCore
+  - UIFactory
+  - Zaphkiel
+  - JustInventory
+
+commands:
+  jstore:
+    aliases:
+      - store
+      - shop
+    description: show all command

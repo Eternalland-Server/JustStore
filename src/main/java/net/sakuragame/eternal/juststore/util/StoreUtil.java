@@ -1,0 +1,189 @@
+package net.sakuragame.eternal.juststore.util;
+
+import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
+import com.taylorswiftcn.megumi.uifactory.generate.type.ActionType;
+import com.taylorswiftcn.megumi.uifactory.generate.ui.component.BasicComponent;
+import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.LabelComp;
+import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.SlotComp;
+import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp;
+import ink.ptms.zaphkiel.ZaphkielAPI;
+import net.sakuragame.eternal.dragoncore.network.PacketSender;
+import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.core.shop.Goods;
+import net.sakuragame.eternal.juststore.core.store.Commodity;
+import net.sakuragame.eternal.juststore.core.store.Tag;
+import net.sakuragame.eternal.juststore.ui.Operation;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+public class StoreUtil {
+
+    private static final JustStore plugin = JustStore.getInstance();
+
+    public static LinkedList<BasicComponent> buildGoodsComponent(Player player, int index, Goods goods) {
+        LinkedList<BasicComponent> components = new LinkedList<>();
+
+        String y = (index == 1 ? "goods_scrollbar_region.y" : "goods_" + (index - 1) + ".y + 51");
+        String bodyID = "goods_" + index;
+        String frameID = bodyID + "_frame";
+        String itemID = bodyID + "_item";
+        String nameID = bodyID + "_name";
+        String priceID = bodyID + "_price";
+        String requireID = bodyID + "_require";
+        String consumeID = bodyID + "_consume";
+        String buyID = bodyID + "_buy";
+
+        components.add(new TextureComp(bodyID)
+                .setTexture("ui/store/shop/goods_bg.png")
+                .setXY("goods_sub.x", y)
+                .setCompSize("goods_sub.width", "52")
+        );
+        components.add(new TextureComp(frameID)
+                .setTexture("ui/pack/slot_bg.png")
+                .setXY(bodyID + ".x + 6", bodyID + ".y + 6")
+                .setCompSize(40, 40)
+        );
+        components.add(new SlotComp(itemID, goods.getGoodsSlot())
+                .setDrawBackground(false)
+                .setXY(frameID + ".x + 2", frameID + ".y + 2")
+                .setScale(2.25)
+        );
+        components.add(new LabelComp(nameID, goods.getName())
+                .setX(frameID + ".x + 46")
+                .setY(frameID + ".y + 2")
+        );
+        components.add(new LabelComp(priceID, goods.getFormatPrice())
+                .setX(bodyID + ".x + (" + bodyID + ".width - " + priceID + ".width) -6")
+                .setY(nameID + ".y")
+        );
+        components.add(new TextureComp(consumeID)
+                .setXY(requireID + ".x", requireID + ".y + 8")
+        );
+
+        PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null));
+
+        HashMap<String, Integer> consume = goods.getConsume();
+        List<String> keys = new ArrayList<>(consume.keySet());
+        if (keys.size() != 0) {
+            components.add(new LabelComp(requireID, "&a需要材料:")
+                    .setX(nameID + ".x")
+                    .setY(nameID + ".y + 14")
+                    .setScale(0.8)
+            );
+            for (int i = 0; i < keys.size(); i++) {
+                String key = keys.get(i);
+                String id = "goods_" + index + "_slot_bg_" + i;
+                components.add(new TextureComp(id)
+                        .setTexture("ui/pack/slot_bg.png")
+                        .setX(consumeID + ".x + 19*" + i)
+                        .setY(consumeID + ".y")
+                        .setCompSize(16, 16)
+                );
+                components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
+                        .setDrawBackground(false)
+                        .setXY(id + ".x", id + ".y")
+                );
+
+                ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(key, null);
+                if (item != null) {
+                    item.setAmount(consume.get(key));
+                    PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), item);
+                }
+            }
+        }
+
+        components.add(new TextureComp(buyID)
+                .setTexture("ui/store/button/buy.png")
+                .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
+                .setCompSize(40, 16)
+                .addAction(ActionType.Left_Click, buyID + ".texture = 'ui/store/button/buy_press.png';")
+                .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/store/button/buy.png';")
+                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                        .addValue(Operation.Buy.getId())
+                        .add("global.eternal_shop_category")
+                        .addValue(goods.getId())
+                )
+        );
+
+        return components;
+    }
+
+    public static LinkedList<BasicComponent> buildCommodityComponent(Player player, int index, Commodity commodity) {
+        LinkedList<BasicComponent> components = new LinkedList<>();
+
+        String bodyID = "goods_" + index;
+        String descID = bodyID + "_desc";
+        String itemID = bodyID + "_item";
+        String tagID = bodyID + "_tag";
+        String buyID = bodyID + "_buy";
+
+        String x = getX(index - 1);
+        String y = getY(index - 1);
+
+        components.add(new TextureComp(bodyID)
+                .setTexture("ui/store/frame.png")
+                .setXY(x, y)
+                .setCompSize("80*(w/960)", "116*(w/960)")
+        );
+        components.add(new TextureComp(descID)
+                .setText(commodity.getDesc())
+                .setTexture("0,0,0,0")
+                .setXY(bodyID + ".x", bodyID + ".y + 66*(w/960)")
+                .setCompSize("80", "20")
+                .setScale("w/960")
+        );
+        components.add(new SlotComp(itemID, commodity.getSlot())
+                .setDrawBackground(false)
+                .setXY(bodyID + ".x + 15", bodyID + ".y + 15*(w/960)")
+                .setScale("3*(w/960)")
+        );
+        components.add(new TextureComp(buyID)
+                .setText("&f&l购买")
+                .setTexture("ui/common/button_normal_a.png")
+                .setXY(bodyID + ".x + 8*(w/960)", bodyID + ".y + 87*(w/960)")
+                .setCompSize("64*(w/960)", "24*(w/960)")
+                .addAction(ActionType.Left_Click, buyID + ".texture = 'ui/common/button_normal_a_press.png';")
+                .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/common/button_normal_a.png';")
+                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                        .addValue(Operation.Buy.getId())
+                        .add("global.eternal_store_category")
+                        .addValue(commodity.getId())
+                )
+        );
+
+        if (commodity.getTag() != Tag.NONE) {
+            components.add(new TextureComp(tagID)
+                    .setTexture(commodity.getTag().getTexture())
+                    .setXY(bodyID + ".x + 6*(w/960)", bodyID + ".y")
+                    .setCompSize("30*(w/960)", "30*(w/960)")
+            );
+        }
+
+        PacketSender.putClientSlotItem(player, commodity.getSlot(), ZaphkielAPI.INSTANCE.getItemStack(commodity.getItem(), null));
+
+        return components;
+    }
+
+    private static String getX(int index) {
+        if (index == 0) return "goods_scrollbar_region.x";
+
+        int line = index % 5;
+        if (line == 0) return "goods_" + (index - 4) + ".x";
+
+        return "goods_" + index + ".x + 84 * (w / 960)";
+    }
+
+    private static String getY(int index) {
+        if (index == 0) return "goods_scrollbar_region.y";
+
+        int line = index % 5;
+        if (line == 0) return "goods_" + (index - 4) + ".y + 126 * (w / 960)";
+
+        return "goods_" + index + ".y";
+    }
+}
