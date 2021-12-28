@@ -5,7 +5,6 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEv
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.shop.ShopCategory;
 import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
@@ -32,23 +31,20 @@ public class ShopListener implements Listener {
         if (operation == null) return;
 
         if (operation == Operation.Category) {
-            int id = e.getParams().getParamI(2);
-            ShopCategory category = ShopCategory.match(id);
+            int category = e.getParams().getParamI(2);
             handleCategory(player, category);
             return;
         }
 
         if (operation == Operation.Buy) {
-            int id = e.getParams().getParamI(2);
-            ShopCategory category = ShopCategory.match(id);
-            if (category == null) return;
-
+            int category = e.getParams().getParamI(2);
             String goodsID = e.getParams().getParam(3);
+
             JustStore.getMallManager().shopBuying(player, category, goodsID);
         }
     }
 
-    private void handleCategory(Player player, ShopCategory category) {
+    private void handleCategory(Player player, int category) {
         UUID uuid = player.getUniqueId();
         String openShop = JustStore.getMallManager().getOpenShop(uuid);
         if (openShop == null) {
@@ -72,7 +68,7 @@ public class ShopListener implements Listener {
 
         int count = e.getCount();
 
-        JustStore.getMallManager().shopBuying(player, ShopCategory.Material, order.getGoodsID(), count);
+        JustStore.getMallManager().shopBuying(player, order.getCategory(), order.getGoodsID(), count);
         QuantityScreen.hide(player);
     }
 

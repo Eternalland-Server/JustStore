@@ -1,7 +1,5 @@
 package net.sakuragame.eternal.juststore.ui.screen;
 
-import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
-import com.taylorswiftcn.megumi.uifactory.generate.type.ActionType;
 import com.taylorswiftcn.megumi.uifactory.generate.type.FunctionType;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.LabelComp;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp;
@@ -12,10 +10,11 @@ import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
 import net.sakuragame.eternal.justmessage.screen.ScreenManager;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.ui.Operation;
-import net.sakuragame.eternal.juststore.ui.comp.GoodsShelfComp;
+import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
+import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class ShopScreen extends BaseInventory {
@@ -37,7 +36,8 @@ public class ShopScreen extends BaseInventory {
         ui
                 .addImports(
                         Arrays.asList(
-                                GoodsShelfComp.shopID,
+                                CommodityComp.shopID,
+                                CategoryComp.screenID,
                                 ScreenManager.getQuantityID()
                         )
                 )
@@ -98,49 +98,35 @@ public class ShopScreen extends BaseInventory {
                         .setWidth("214")
                         .setHeight("276")
                 )
-                .addComponent(new TextureComp("category_1", "(global.eternal_shop_category == 1) ? 'ui/store/shop/selected.png' : 'ui/store/shop/unselected.png'")
-                        .setText("&f武器")
+                .addComponent(new TextureComp("category_1", "0,0,0,0")
                         .setXY("goods_frame.x", "body.y + 50")
                         .setWidth("32")
                         .setHeight("14")
-                        .addAction(ActionType.Left_Click, new SubmitParams(plugin)
-                                .setCondition("global.eternal_shop_category != 1")
-                                .addValue(Operation.Category.getId())
-                                .addValue(1)
-                        )
                 )
-                .addComponent(new TextureComp("category_2", "(global.eternal_shop_category == 2) ? 'ui/store/shop/selected.png' : 'ui/store/shop/unselected.png'")
-                        .setText("&f装备")
+                .addComponent(new TextureComp("category_2", "0,0,0,0")
                         .setXY("goods_frame.x + 34", "category_1.y")
                         .setWidth("32")
                         .setHeight("14")
-                        .addAction(ActionType.Left_Click, new SubmitParams(plugin)
-                                .setCondition("global.eternal_shop_category != 2")
-                                .addValue(Operation.Category.getId())
-                                .addValue(2)
-                        )
                 )
-                .addComponent(new TextureComp("category_3", "(global.eternal_shop_category == 3) ? 'ui/store/shop/selected.png' : 'ui/store/shop/unselected.png'")
-                        .setText("&f饰品")
+                .addComponent(new TextureComp("category_3", "0,0,0,0")
                         .setXY("category_2.x + 34", "category_1.y")
                         .setWidth("32")
                         .setHeight("14")
-                        .addAction(ActionType.Left_Click, new SubmitParams(plugin)
-                                .setCondition("global.eternal_shop_category != 3")
-                                .addValue(Operation.Category.getId())
-                                .addValue(3)
-                        )
                 )
-                .addComponent(new TextureComp("category_4", "(global.eternal_shop_category == 4) ? 'ui/store/shop/selected.png' : 'ui/store/shop/unselected.png'")
-                        .setText("&f材料")
+                .addComponent(new TextureComp("category_4", "0,0,0,0")
                         .setXY("category_3.x + 34", "category_1.y")
                         .setWidth("32")
                         .setHeight("14")
-                        .addAction(ActionType.Left_Click, new SubmitParams(plugin)
-                                .setCondition("global.eternal_shop_category != 4")
-                                .addValue(Operation.Category.getId())
-                                .addValue(4)
-                        )
+                )
+                .addComponent(new TextureComp("category_5", "0,0,0,0")
+                        .setXY("category_4.x + 34", "category_1.y")
+                        .setWidth("32")
+                        .setHeight("14")
+                )
+                .addComponent(new TextureComp("category_6", "0,0,0,0")
+                        .setXY("category_5.x + 34", "category_1.y")
+                        .setWidth("32")
+                        .setHeight("14")
                 )
                 .addComponent(new TextureComp("goods_sub", "0,0,0,0")
                         .setXY("goods_frame.x", "goods_frame.y + 10")
@@ -156,7 +142,7 @@ public class ShopScreen extends BaseInventory {
         yaml = ui.build(null);
 
         /*try {
-            File file = new File(JustShop.getInstance().getDataFolder(), "main.yml");
+            File file = new File(JustStore.getInstance().getDataFolder(), "main.yml");
             yaml.save(file);
         }
         catch (Exception e) {

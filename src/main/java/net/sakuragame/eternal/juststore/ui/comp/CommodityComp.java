@@ -6,19 +6,21 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
+import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.shop.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.util.StoreUtil;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Map;
 
-public class GoodsShelfComp extends BaseInventory {
+public class CommodityComp extends BaseInventory {
 
     public final static String shopID = "eternal_shop_shelf";
     public final static String storeID = "eternal_store_shelf";
 
-    public GoodsShelfComp() {
+    public CommodityComp() {
         super(shopID);
     }
 
@@ -58,7 +60,7 @@ public class GoodsShelfComp extends BaseInventory {
         yaml = ui.build(player);
 
         /*try {
-            File file = new File(JustShop.getInstance().getDataFolder(), "comp.yml");
+            File file = new File(JustStore.getInstance().getDataFolder(), "commodity.yml");
             yaml.save(file);
         }
         catch (Exception e) {

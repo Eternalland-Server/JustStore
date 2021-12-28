@@ -16,10 +16,7 @@ import net.sakuragame.eternal.juststore.ui.Operation;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class StoreUtil {
 
@@ -67,7 +64,7 @@ public class StoreUtil {
 
         PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null));
 
-        HashMap<String, Integer> consume = goods.getConsume();
+        Map<String, Integer> consume = goods.getConsume();
         List<String> keys = new ArrayList<>(consume.keySet());
         if (keys.size() != 0) {
             components.add(new LabelComp(requireID, "&a需要材料:")

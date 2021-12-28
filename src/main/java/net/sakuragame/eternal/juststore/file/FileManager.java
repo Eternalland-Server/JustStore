@@ -84,7 +84,6 @@ public class FileManager extends JustConfiguration {
 
         for (StoreType type : StoreType.values()) {
             File sub = new File(file, type.getFile());
-            System.out.println(type.getFile() + ": " + sub.exists());
             if (!sub.exists()) continue;
 
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(sub);

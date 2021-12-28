@@ -11,7 +11,7 @@ import net.sakuragame.eternal.justinventory.ui.comp.InventoryComp;
 import net.sakuragame.eternal.justmessage.screen.ScreenManager;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.ui.Operation;
-import net.sakuragame.eternal.juststore.ui.comp.GoodsShelfComp;
+import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 
 import java.util.Arrays;
 
@@ -32,7 +32,7 @@ public class StoreScreen extends BaseInventory {
                         Arrays.asList(
                                 BalanceComp.screenID,
                                 InventoryComp.screenID,
-                                GoodsShelfComp.storeID,
+                                CommodityComp.storeID,
                                 bannerID,
                                 ScreenManager.getQuantityID()
                         )

@@ -9,16 +9,14 @@ import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.ShopPurchasedEvent;
 import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
 import net.sakuragame.eternal.juststore.core.common.Charge;
-import net.sakuragame.eternal.juststore.core.shop.Goods;
-import net.sakuragame.eternal.juststore.core.shop.ShopCategory;
-import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
-import net.sakuragame.eternal.juststore.core.shop.Shop;
+import net.sakuragame.eternal.juststore.core.shop.*;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
-import net.sakuragame.eternal.juststore.ui.comp.GoodsShelfComp;
+import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
+import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
 import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
 import net.sakuragame.eternal.juststore.util.Utils;
@@ -54,27 +52,32 @@ public class MallManager {
         plugin.getLogger().info(String.format("已载入 %s 个商店", shops.size()));
     }
 
-    public void openShop(Player player, String shopID, ShopCategory category) {
+    public void openShop(Player player, String shopID) {
+        openShop(player, shopID, 0);
+    }
+
+    public void openShop(Player player, String shopID, int category) {
+        UUID uuid = player.getUniqueId();
+
         Shop shop = shops.get(shopID);
         if (shop == null) return;
 
-        GoodsShelfComp comp = new GoodsShelfComp();
-        switch (category) {
-            case Weapon:
-                comp.sendShopGoods(player, shop.getWeapon());
-                break;
-            case Equip:
-                comp.sendShopGoods(player, shop.getEquip());
-                break;
-            case Accessory:
-                comp.sendShopGoods(player, shop.getAccessory());
-                break;
-            case Material:
-                comp.sendShopGoods(player, shop.getMaterial());
-                break;
+        GoodsShelf shelf = shop.getShelf().get(category);
+        if (shelf == null) return;
+
+        if (!openMap.containsKey(uuid) || !openMap.get(uuid).equals(shop.getName())) {
+            CategoryComp categoryComp = new CategoryComp();
+            categoryComp.sendCategory(player, shop);
         }
 
-        PacketSender.sendRunFunction(player, "default", "global.eternal_shop_category = " + category.getId() + ";", false);
+        CommodityComp comp = new CommodityComp();
+        comp.sendShopGoods(player, shelf.getGoods());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("eternal_shop_name", shop.getName());
+
+        PacketSender.sendSyncPlaceholder(player, map);
+        PacketSender.sendRunFunction(player, "default", "global.eternal_shop_category = " + category + ";", false);
         PacketSender.sendOpenGui(player, ShopScreen.screenID);
         openMap.put(player.getUniqueId(), shopID);
     }
@@ -83,25 +86,17 @@ public class MallManager {
         Store store = stores.get(type);
         if (store == null) return;
 
-        GoodsShelfComp comp = new GoodsShelfComp();
+        CommodityComp comp = new CommodityComp();
         comp.sendStoreGoods(player, store.getCommodities());
 
         PacketSender.sendRunFunction(player, "default", "global.eternal_store_category = " + type.getId() + ";", false);
         PacketSender.sendOpenGui(player, StoreScreen.screenID);
     }
 
-    public Goods getGoods(String shopID, ShopCategory category, String goodsID) {
-        Shop shop = shops.get(shopID);
-
-        switch (category) {
-            case Weapon:
-                return shop.getWeapon().get(goodsID);
-            case Equip:
-                return shop.getEquip().get(goodsID);
-            case Accessory:
-                return shop.getAccessory().get(goodsID);
-            case Material:
-                return shop.getMaterial().get(goodsID);
+    public Goods getGoods(Shop shop, int category, String goodsID) {
+        GoodsShelf shelf = shop.getShelf().get(category);
+        if (shelf != null) {
+            return shelf.getGoods().get(goodsID);
         }
 
         return null;
@@ -158,11 +153,11 @@ public class MallManager {
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
     }
 
-    public void shopBuying(Player player, ShopCategory category, String goodsID) {
+    public void shopBuying(Player player, int category, String goodsID) {
         shopBuying(player, category, goodsID, null);
     }
 
-    public void shopBuying(Player player, ShopCategory category, String goodsID, Integer amount) {
+    public void shopBuying(Player player, int category, String goodsID, Integer amount) {
         UUID uuid = player.getUniqueId();
         String openShop = getOpenShop(uuid);
         if (openShop == null) {
@@ -170,21 +165,24 @@ public class MallManager {
             return;
         }
 
-        Goods goods = getGoods(openShop, category, goodsID);
+        Shop shop = shops.get(openShop);
+        Goods goods = getGoods(shop, category, goodsID);
         if (goods == null) {
             player.closeInventory();
             return;
         }
 
-        if (category == ShopCategory.Material && amount == null) {
+        if (!goods.isSingle() && amount == null) {
             QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
             box.open(player, true);
-            addShopOrder(player.getUniqueId(), new ShopOrder(openShop, goods.getId()));
+            addShopOrder(player.getUniqueId(), new ShopOrder(openShop, category, goods.getId()));
             return;
         }
 
+        amount = (amount == null) ? 1 : amount;
+
         Charge charge = goods.getCharge();
-        double price = amount == null ? goods.getPrice() : goods.getPrice() * amount;
+        double price = goods.getPrice() * amount;
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
             MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
@@ -192,12 +190,12 @@ public class MallManager {
         }
 
         if (goods.getConsume().size() != 0) {
-            if (!Utils.checkItem(player, new HashMap<>(goods.getConsume()))) {
+            if (!Utils.checkItem(player, goods.getConsume(amount))) {
                 MessageAPI.sendActionTip(player, "&c&l购买失败，背包内材料不足");
                 return;
             }
 
-            Utils.consumeItem(player, new HashMap<>(goods.getConsume()));
+            Utils.consumeItem(player, goods.getConsume(amount));
         }
 
         ItemStack boughtGoods = ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), player);
@@ -207,11 +205,10 @@ public class MallManager {
         }
         charge.withdraw(player, price);
 
-        amount = (amount == null) ? 1 : amount;
         boughtGoods.setAmount(amount);
         player.getInventory().addItem(boughtGoods);
 
-        ShopPurchasedEvent event = new ShopPurchasedEvent(player, openShop, category, goodsID, amount);
+        ShopPurchasedEvent event = new ShopPurchasedEvent(player, openShop, shop.getShelf().get(category).getId(), goodsID, amount);
         event.call();
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");

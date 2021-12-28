@@ -1,87 +1,106 @@
 name: '&6&l老铁匠的商店'
 weapon:
-  goods_1:
-    item: destroyer_sword
-    name: '&f&l破灭者之剑'
-    charge: points
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  goods_2:
-    item: destroyer_shield
-    name: '&f&l破灭者坚盾'
-    charge: coins
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
+  name: '&f武器'
+  list:
+    goods_1:
+      item: destroyer_sword
+      name: '&f&l破灭者之剑'
+      single: true
+      charge: points
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_2:
+      item: destroyer_shield
+      name: '&f&l破灭者坚盾'
+      single: true
+      charge: coins
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
 equip:
-  goods_1:
-    item: destroyer_helmet
-    name: '&f&l破灭者头盔'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  goods_2:
-    item: destroyer_chestplate
-    name: '&f&l破灭者盔甲'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  goods_3:
-    item: destroyer_leggings
-    name: '&f&l破灭者裤子'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  goods_4:
-    item: destroyer_boots
-    name: '&f&l破灭者鞋子'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
+  name: '&f装备'
+  list:
+    goods_1:
+      item: destroyer_helmet
+      name: '&f&l破灭者头盔'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_2:
+      item: destroyer_chestplate
+      name: '&f&l破灭者盔甲'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_3:
+      item: destroyer_leggings
+      name: '&f&l破灭者裤子'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_4:
+      item: destroyer_boots
+      name: '&f&l破灭者鞋子'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
 accessory:
-  good_1:
-    item: destroyer_glasses
-    name: '&f&l破灭者面饰'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  good_2:
-    item: destroyer_eardrop
-    name: '&f&l破灭者耳环'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
-  good_3:
-    item: destroyer_clock
-    name: '&f&l破灭者披风'
-    charge: money
-    price: 10000
-    consume:
-      - flower_mushroom_umbrella:64
-      - mushroom_bubble:8
+  name: '&f饰品'
+  list:
+    goods_1:
+      item: destroyer_glasses
+      name: '&f&l破灭者面饰'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_2:
+      item: destroyer_eardrop
+      name: '&f&l破灭者耳环'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
+    goods_3:
+      item: destroyer_clock
+      name: '&f&l破灭者披风'
+      single: true
+      charge: money
+      price: 10000
+      consume:
+        - flower_mushroom_umbrella:64
+        - mushroom_bubble:8
 material:
-  good_1:
-    item: flower_mushroom_umbrella
-    name: '&8&l[&f花蘑菇盖&8&l]'
-    charge: money
-    price: 99
-  mushroom_bubble:
-    item: destroyer_eardrop
-    name: '&8&l[&f蘑菇泡&8&l]'
-    charge: money
-    price: 99
+  name: '&f饰品'
+  list:
+    goods_1:
+      item: flower_mushroom_umbrella
+      name: '&8&l[&f花蘑菇盖&8&l]'
+      single: false
+      charge: money
+      price: 99
+    goods_2:
+      item: destroyer_eardrop
+      name: '&8&l[&f蘑菇泡&8&l]'
+      single: false
+      charge: money
+      price: 99

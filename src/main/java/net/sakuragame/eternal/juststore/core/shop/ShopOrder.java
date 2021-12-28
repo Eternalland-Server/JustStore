@@ -8,6 +8,7 @@ import lombok.Getter;
 public class ShopOrder {
 
     private String shopID;
+    private Integer category;
     private String goodsID;
 
 }

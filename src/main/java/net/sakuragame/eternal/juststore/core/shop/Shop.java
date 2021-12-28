@@ -12,28 +12,18 @@ import java.util.LinkedHashMap;
 public class Shop {
 
     private final String name;
-    private final LinkedHashMap<String, Goods> weapon;
-    private final LinkedHashMap<String, Goods> equip;
-    private final LinkedHashMap<String, Goods> accessory;
-    private final LinkedHashMap<String, Goods> material;
+    private final LinkedHashMap<Integer, GoodsShelf> shelf;
 
     public Shop(YamlConfiguration yaml) {
         this.name = yaml.getString("name");
-        this.weapon = loadCategory(yaml.getConfigurationSection("weapon"));
-        this.equip = loadCategory(yaml.getConfigurationSection("equip"));
-        this.accessory = loadCategory(yaml.getConfigurationSection("accessory"));
-        this.material = loadCategory(yaml.getConfigurationSection("material"));
-    }
+        this.shelf = new LinkedHashMap<>();
 
-    private LinkedHashMap<String, Goods> loadCategory(ConfigurationSection section) {
-        LinkedHashMap<String, Goods> map = new LinkedHashMap<>();
-        if (section == null) return map;
+        for (String key : yaml.getKeys(false)) {
+            if (key.equals("name")) continue;
 
-        for (String key : section.getKeys(false)) {
-            ConfigurationSection sub = section.getConfigurationSection(key);
-            map.put(key, new Goods(key, sub));
+            String name = yaml.getString(key + ".name");
+            ConfigurationSection section = yaml.getConfigurationSection(key + ".list");
+            shelf.put(shelf.size(), new GoodsShelf(key, name, section));
         }
-
-        return map;
     }
 }

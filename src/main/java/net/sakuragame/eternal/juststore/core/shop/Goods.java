@@ -6,6 +6,7 @@ import net.sakuragame.eternal.juststore.core.common.Charge;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @Getter
 @AllArgsConstructor
@@ -14,17 +15,19 @@ public class Goods {
     private final String id;
     private final String item;
     private final String name;
+    private final boolean single;
     private final Charge charge;
     private final Double price;
-    private final HashMap<String, Integer> consume;
+    private final LinkedHashMap<String, Integer> consume;
 
     public Goods(String id, ConfigurationSection section) {
         this.id = id;
         this.item = section.getString("item");
         this.name = section.getString("name");
+        this.single = section.getBoolean("single");
         this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price");
-        this.consume = new HashMap<>();
+        this.consume = new LinkedHashMap<>();
         for (String key : section.getStringList("consume")) {
             String[] args = key.split(":", 2);
             String consumeID = args[0];
@@ -43,5 +46,20 @@ public class Goods {
 
     public String getConsumeSlot(int i) {
         return id + "_consume_slot_" + i;
+    }
+
+    public LinkedHashMap<String, Integer> getConsume() {
+        return new LinkedHashMap<>(consume);
+    }
+
+    public LinkedHashMap<String, Integer> getConsume(int i) {
+        LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+
+        for (String key : consume.keySet()) {
+            int count = consume.get(key);
+            map.put(key, count * i);
+        }
+
+        return map;
     }
 }
