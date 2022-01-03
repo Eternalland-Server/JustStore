@@ -1,5 +1,6 @@
 package net.sakuragame.eternal.juststore.core.common;
 
+import com.taylorswiftcn.justwei.util.UnitConvert;
 import lombok.Getter;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
@@ -28,7 +29,8 @@ public enum Charge {
     }
 
     public String formatting(double value) {
-        return getSymbol() + a.format(value) + getCurrency().getDisplay();
+        String s = value > 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, (long) value) : a.format(value);
+        return getSymbol() + s + getCurrency().getDisplay();
     }
 
     public void withdraw(Player player, double value) {
