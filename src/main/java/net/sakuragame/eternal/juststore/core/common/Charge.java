@@ -29,7 +29,7 @@ public enum Charge {
     }
 
     public String formatting(double value) {
-        String s = value > 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, (long) value) : a.format(value);
+        String s = value > 10000 ? UnitConvert.formatCN(UnitConvert.TenThousand, value, 2) : a.format(value);
         return getSymbol() + s + getCurrency().getDisplay();
     }
 
