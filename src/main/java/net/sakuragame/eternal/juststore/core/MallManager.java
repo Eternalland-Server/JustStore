@@ -144,7 +144,7 @@ public class MallManager {
         charge.withdraw(player, price);
 
         amount = (amount == null) ? 1 : amount;
-        boughtGoods.setAmount(amount);
+        boughtGoods.setAmount(amount * commodity.getAmount());
         player.getInventory().addItem(boughtGoods);
 
         StorePurchasedEvent event = new StorePurchasedEvent(player, type, commodityID, amount);

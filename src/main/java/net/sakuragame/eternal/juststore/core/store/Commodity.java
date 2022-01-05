@@ -14,6 +14,7 @@ public class Commodity {
     private final Tag tag;
     private final boolean single;
     private final String name;
+    private final int amount;
     private final Charge charge;
     private final Double price;
 
@@ -23,6 +24,7 @@ public class Commodity {
         this.tag = Tag.valueOf(section.getString("tag", "NONE").toUpperCase());
         this.single = section.getBoolean("single");
         this.name = section.getString("name");
+        this.amount = section.getInt("amount");
         this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price");
     }
