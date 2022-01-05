@@ -7,11 +7,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class Utils {
 
     private final static ZaphkielAPI zap = ZaphkielAPI.INSTANCE;
+    private final static DecimalFormat a = new DecimalFormat("0");
+
+    public static String formatting(double value) {
+        return a.format(value);
+    }
 
     public static boolean checkItem(Player player, HashMap<String, Integer> consume) {
         for (ItemStack item : player.getInventory().getContents()) {

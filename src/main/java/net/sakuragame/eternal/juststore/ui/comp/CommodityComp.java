@@ -92,7 +92,7 @@ public class CommodityComp extends BaseInventory {
                 .setThumb((TextureComp) new TextureComp("goods_scrollbar_thumb")
                         .setTexture("ui/store/shop/scrollbar_thumb.png")
                         .setXY("scrollbar_track.x", "scrollbar_track.y + 9*(w/960)")
-                        .setCompSize(9, 19)
+                        .setCompSize("9*(w/960)", "19*(w/960)")
                         .setMaxMoveY("scrollbar_track.height - 37*(w/960)")
                 );
 

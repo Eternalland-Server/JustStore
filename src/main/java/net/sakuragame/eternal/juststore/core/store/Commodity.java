@@ -1,8 +1,11 @@
 package net.sakuragame.eternal.juststore.core.store;
 
+import com.taylorswiftcn.justwei.util.UnitConvert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Value;
 import net.sakuragame.eternal.juststore.core.common.Charge;
+import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 
 @Getter
@@ -29,11 +32,13 @@ public class Commodity {
         this.price = section.getDouble("price");
     }
 
-    public String getDesc() {
-        return name + "\n" + charge.formatting(price);
+    public String getPriceFormat() {
+        String s = getPrice() >= 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, getPrice()) : Utils.formatting(getPrice());
+        return charge.getSymbol() + " " + s + " &6" + charge.getCurrency().getDisplay();
     }
 
     public String getSlot() {
         return "store_" + id + "_slot";
     }
+
 }

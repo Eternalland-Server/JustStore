@@ -111,7 +111,7 @@ public class StoreScreen extends BaseInventory {
                 )
                 .addComponent(new TextureComp("category_4", "0,0,0,30")
                         .setText("global.eternal_store_category == 4 ? '&f&l礼包' : '&7&l礼包'")
-                        .setXY("category_3.x + 58", "category_1.y")
+                        .setXY("category_3.x + 58*(w/960)", "category_1.y")
                         .setWidth("56*(w/960)")
                         .setHeight("23*(w/960)")
                         .addAction(ActionType.Enter, "category_4.texture = '255,255,255,30';")
@@ -163,10 +163,11 @@ public class StoreScreen extends BaseInventory {
                 .addComponent(new TextureComp("goods_sub")
                         .setTexture("0,0,0,0")
                         .setXY("category_bar.x", "category_bar.y + 36*(w/960)")
-                        .setCompSize("428*(w/960)", "252*(w/960)")
+                        .setCompSize("436*(w/960)", "252*(w/960)")
                 )
                 .addComponent(new LabelComp("tip_contents", "&6&lTIP.&f商场所有的东西都很好多买点，有意身心健康，&6樱花&f说他也非常喜欢买这个东西&7充3w没有解决不了的事情")
                         .setXY("tip_frame.x + 12*(w/960)", "tip_frame.y + 12*(w/960)")
+                        .setScale("w/960")
                 );
 
         yaml = ui.build(null);

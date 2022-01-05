@@ -114,7 +114,8 @@ public class StoreUtil {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
         String bodyID = "goods_" + index;
-        String descID = bodyID + "_desc";
+        String nameID = bodyID + "_name";
+        String priceID = bodyID + "+price";
         String itemID = bodyID + "_item";
         String tagID = bodyID + "_tag";
         String buyID = bodyID + "_buy";
@@ -127,17 +128,24 @@ public class StoreUtil {
                 .setXY(x, y)
                 .setCompSize("80*(w/960)", "116*(w/960)")
         );
-        components.add(new TextureComp(descID)
-                .setText(commodity.getDesc())
+        components.add(new TextureComp(nameID)
+                .setText(commodity.getName())
                 .setTexture("0,0,0,0")
-                .setXY(bodyID + ".x", bodyID + ".y + 66*(w/960)")
-                .setCompSize("80", "20")
+                .setXY(bodyID + ".x", bodyID + ".y + 65*(w/960)")
+                .setCompSize("80", "10")
+                .setScale("w/960")
+        );
+        components.add(new TextureComp(priceID)
+                .setText(commodity.getPriceFormat())
+                .setTexture("0,0,0,0")
+                .setXY(bodyID + ".x", nameID + ".y + 11*(w/960)")
+                .setCompSize("80", "10")
                 .setScale("w/960")
         );
         components.add(new SlotComp(itemID, commodity.getSlot())
                 .setDrawBackground(false)
-                .setXY(bodyID + ".x + 15", bodyID + ".y + 15*(w/960)")
-                .setScale("3*(w/960)")
+                .setXY(bodyID + ".x + 18.4*(w/960)", bodyID + ".y + 18.4*(w/960)")
+                .setScale("2.7*(w/960)")
         );
         components.add(new TextureComp(buyID)
                 .setText("&f&l购买")
@@ -161,7 +169,11 @@ public class StoreUtil {
             );
         }
 
-        PacketSender.putClientSlotItem(player, commodity.getSlot(), ZaphkielAPI.INSTANCE.getItemStack(commodity.getItem(), null));
+        ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(commodity.getItem(), null);
+        if (item != null) {
+            item.setAmount(commodity.getAmount());
+            PacketSender.putClientSlotItem(player, commodity.getSlot(), item);
+        }
 
         return components;
     }
@@ -172,7 +184,7 @@ public class StoreUtil {
         int line = index % 5;
         if (line == 0) return "goods_" + (index - 4) + ".x";
 
-        return "goods_" + index + ".x + 84 * (w / 960)";
+        return "goods_" + index + ".x + 86 * (w / 960)";
     }
 
     private static String getY(int index) {

@@ -1,8 +1,10 @@
 package net.sakuragame.eternal.juststore.core.shop;
 
+import com.taylorswiftcn.justwei.util.UnitConvert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.core.common.Charge;
+import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
@@ -37,7 +39,8 @@ public class Goods {
     }
 
     public String getFormatPrice() {
-        return charge.formatting(price);
+        String s = getPrice() > 10000 ? UnitConvert.formatCN(UnitConvert.TenThousand, getPrice(), 2) : Utils.formatting(getPrice());
+        return charge.getSymbol() + s + charge.getCurrency().getDisplay();
     }
 
     public String getGoodsSlot() {
