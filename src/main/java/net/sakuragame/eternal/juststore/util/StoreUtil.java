@@ -98,7 +98,6 @@ public class StoreUtil {
                             item.setAmount(amount);
                             amount = 0;
                         }
-                        item.setAmount(consume.get(key));
                         PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), item);
                     }
                     i++;
