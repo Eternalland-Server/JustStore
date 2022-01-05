@@ -92,7 +92,7 @@ public class StoreUtil {
                     if (item != null) {
                         if (amount > 64) {
                             item.setAmount(64);
-                            amount -= 64;
+                            amount = amount - 64;
                         }
                         else {
                             item.setAmount(amount);
