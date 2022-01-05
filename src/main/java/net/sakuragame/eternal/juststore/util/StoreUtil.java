@@ -72,25 +72,37 @@ public class StoreUtil {
                     .setY(nameID + ".y + 14")
                     .setScale(0.8)
             );
-            for (int i = 0; i < keys.size(); i++) {
-                String key = keys.get(i);
-                String id = "goods_" + index + "_slot_bg_" + i;
-                components.add(new TextureComp(id)
-                        .setTexture("ui/pack/slot_bg.png")
-                        .setX(consumeID + ".x + 19*" + i)
-                        .setY(consumeID + ".y")
-                        .setCompSize(16, 16)
-                );
-                components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
-                        .setDrawBackground(false)
-                        .setXY(id + ".x", id + ".y")
-                );
-
+            int i = 0;
+            for (String key : consume.keySet()) {
                 ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(key, null);
-                if (item != null) {
-                    item.setAmount(consume.get(key));
-                    PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), item);
-                }
+                int amount = consume.get(key);
+                do {
+                    String id = "goods_" + index + "_slot_bg_" + i;
+                    components.add(new TextureComp(id)
+                            .setTexture("ui/pack/slot_bg.png")
+                            .setX(consumeID + ".x + 19*" + i)
+                            .setY(consumeID + ".y")
+                            .setCompSize(16, 16)
+                    );
+                    components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
+                            .setDrawBackground(false)
+                            .setXY(id + ".x", id + ".y")
+                    );
+
+                    if (item != null) {
+                        if (amount > 64) {
+                            item.setAmount(64);
+                            amount -= 64;
+                        }
+                        else {
+                            item.setAmount(amount);
+                            amount = 0;
+                        }
+                        item.setAmount(consume.get(key));
+                        PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), item);
+                    }
+                    i++;
+                } while (amount != 0);
             }
         }
 
