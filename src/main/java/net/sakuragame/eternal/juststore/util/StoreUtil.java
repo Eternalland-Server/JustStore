@@ -1,5 +1,6 @@
 package net.sakuragame.eternal.juststore.util;
 
+import com.taylorswiftcn.megumi.uifactory.generate.function.Statements;
 import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
 import com.taylorswiftcn.megumi.uifactory.generate.type.ActionType;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.BasicComponent;
@@ -99,7 +100,11 @@ public class StoreUtil {
                 .setTexture("ui/store/button/buy.png")
                 .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
                 .setCompSize(40, 16)
-                .addAction(ActionType.Left_Click, buyID + ".texture = 'ui/store/button/buy_press.png';")
+                .addAction(ActionType.Left_Click, new Statements()
+                        .add("func.Sound_Play();")
+                        .add(buyID + ".texture = 'ui/store/button/buy_press.png';")
+                        .build()
+                )
                 .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/store/button/buy.png';")
                 .addAction(ActionType.Left_Release, new SubmitParams(plugin)
                         .addValue(Operation.Buy.getId())
@@ -153,7 +158,11 @@ public class StoreUtil {
                 .setTexture("ui/common/button_normal_a.png")
                 .setXY(bodyID + ".x + 8*(w/960)", bodyID + ".y + 87*(w/960)")
                 .setCompSize("64*(w/960)", "24*(w/960)")
-                .addAction(ActionType.Left_Click, buyID + ".texture = 'ui/common/button_normal_a_press.png';")
+                .addAction(ActionType.Left_Click, new Statements()
+                        .add("func.Sound_Play();")
+                        .add(buyID + ".texture = 'ui/common/button_normal_a_press.png';")
+                        .build()
+                )
                 .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/common/button_normal_a.png';")
                 .addAction(ActionType.Left_Release, new SubmitParams(plugin)
                         .addValue(Operation.Buy.getId())
