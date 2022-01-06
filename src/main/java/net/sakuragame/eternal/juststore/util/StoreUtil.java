@@ -83,7 +83,8 @@ public class StoreUtil {
                 );
                 components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
                         .setDrawBackground(false)
-                        .setXY(id + ".x", id + ".y")
+                        .setXY(id + ".x + 2", id + ".y + 2")
+                        .setScale(0.75)
                 );
 
                 ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(key, null);
