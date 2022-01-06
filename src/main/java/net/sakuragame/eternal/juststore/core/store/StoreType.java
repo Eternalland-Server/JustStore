@@ -7,8 +7,8 @@ public enum StoreType {
 
     Prop(1, "prop.yml"),
     Equip(2, "equip.yml"),
-    Skin(3, "skin.yml"),
-    Kit(4, "kit.yml"),
+    Clothes(3, "clothes.yml"),
+    Gift(4, "gift.yml"),
     Pet(5, "pet.yml");
 
     private final int id;
