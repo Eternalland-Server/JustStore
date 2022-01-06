@@ -34,6 +34,15 @@ public class StoreListener implements Listener {
     }
 
     @EventHandler
+    public void onHudSubmit(UIFCompSubmitEvent e) {
+        Player player = e.getPlayer();
+        if (!e.getScreenID().equals("function_hud")) return;
+        if (!e.getParams().getParam(0).equals("store")) return;
+
+        JustStore.getMallManager().openStore(player, StoreType.Prop);
+    }
+
+    @EventHandler
     public void onSubmit(UIFCompSubmitEvent e) {
         Player player = e.getPlayer();
 
