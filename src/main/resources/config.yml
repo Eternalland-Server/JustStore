@@ -1,1 +1,3 @@
 Prefix: '[JustShop]'
+purchase-limit:
+  goods_1: 1

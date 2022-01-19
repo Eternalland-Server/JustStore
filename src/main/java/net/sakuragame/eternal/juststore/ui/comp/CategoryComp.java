@@ -11,8 +11,6 @@ import net.sakuragame.eternal.juststore.core.shop.Shop;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-
 public class CategoryComp extends BaseInventory {
 
     public final static String screenID = "eternal_shop_category";
@@ -23,8 +21,8 @@ public class CategoryComp extends BaseInventory {
 
     public void sendCategory(Player player, Shop shop) {
 
-        for (int i = 0; i < Math.min(6, shop.getShelf().size()); i++) {
-            String name = shop.getShelf().get(i).getName();
+        for (int i = 0; i < Math.min(6, shop.getGoodsShelf().size()); i++) {
+            String name = shop.getGoodsShelf().get(i).getName();
 
             ui
                     .addComponent(new TextureComp(i + "_category")

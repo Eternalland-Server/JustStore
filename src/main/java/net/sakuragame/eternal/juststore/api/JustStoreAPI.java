@@ -1,6 +1,7 @@
 package net.sakuragame.eternal.juststore.api;
 
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.entity.Player;
 
 public class JustStoreAPI {
@@ -10,6 +11,6 @@ public class JustStoreAPI {
     }
 
     public static void openShop(Player player, String shopID, int category) {
-        JustStore.getMallManager().openShop(player, shopID, category);
+        ScreenManager.openShop(player, shopID, category);
     }
 }

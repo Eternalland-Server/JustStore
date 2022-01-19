@@ -2,19 +2,25 @@ package net.sakuragame.eternal.juststore.file.sub;
 
 import com.taylorswiftcn.justwei.util.MegumiUtil;
 import net.sakuragame.eternal.juststore.JustStore;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigFile {
     private static YamlConfiguration config;
 
     public static String prefix;
 
+    public static Map<String, Integer> purchaseLimit;
+
     public static void init() {
-        config = JustStore.getInstance().getFileManager().getConfig();
+        config = JustStore.getFileManager().getConfig();
 
         prefix = getString("Prefix");
+        loadPurchaseLimit();
     }
 
     private static String getString(String path) {
@@ -23,5 +29,17 @@ public class ConfigFile {
 
     private static List<String> getStringList(String path) {
         return MegumiUtil.onReplace(config.getStringList(path));
+    }
+
+    private static void loadPurchaseLimit() {
+        purchaseLimit = new HashMap<>();
+
+        ConfigurationSection section = config.getConfigurationSection("purchase-limit");
+        if (section == null) return;
+
+        for (String key : section.getKeys(false)) {
+            int amount = section.getInt(key);
+            purchaseLimit.put(key, amount);
+        }
     }
 }

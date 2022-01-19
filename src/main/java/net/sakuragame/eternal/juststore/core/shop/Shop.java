@@ -11,19 +11,25 @@ import java.util.LinkedHashMap;
 @AllArgsConstructor
 public class Shop {
 
+    private final String id;
     private final String name;
-    private final LinkedHashMap<Integer, GoodsShelf> shelf;
+    private final LinkedHashMap<Integer, GoodsShelf> goodsShelf;
 
-    public Shop(YamlConfiguration yaml) {
+    public Shop(String id, YamlConfiguration yaml) {
+        this.id = id;
         this.name = yaml.getString("name");
-        this.shelf = new LinkedHashMap<>();
+        this.goodsShelf = new LinkedHashMap<>();
 
         for (String key : yaml.getKeys(false)) {
             if (key.equals("name")) continue;
 
             String name = yaml.getString(key + ".name");
             ConfigurationSection section = yaml.getConfigurationSection(key + ".list");
-            shelf.put(shelf.size(), new GoodsShelf(key, name, section));
+            goodsShelf.put(goodsShelf.size(), new GoodsShelf(key, name, section));
         }
+    }
+
+    public GoodsShelf getGoodsShelf(int id) {
+        return goodsShelf.get(id);
     }
 }

@@ -6,13 +6,11 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
-import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.shop.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
-import net.sakuragame.eternal.juststore.util.StoreUtil;
+import net.sakuragame.eternal.juststore.ui.ScreenHandler;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.Map;
 
 public class CommodityComp extends BaseInventory {
@@ -52,7 +50,7 @@ public class CommodityComp extends BaseInventory {
 
         int i = 1;
         for (Goods goods : goodsList.values()) {
-            comp.addContent(StoreUtil.buildGoodsComponent(player, i, goods));
+            comp.addContent(ScreenHandler.build(player, i, goods));
             i++;
         }
         ui.addComponent(comp);
@@ -98,7 +96,7 @@ public class CommodityComp extends BaseInventory {
 
         int i = 1;
         for (Commodity commodity : commodities.values()) {
-            comp.addContent(StoreUtil.buildCommodityComponent(player, i, commodity));
+            comp.addContent(ScreenHandler.build(player, i, commodity));
             i++;
         }
         ui.addComponent(comp);

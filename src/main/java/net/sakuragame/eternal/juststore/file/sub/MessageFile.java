@@ -15,7 +15,7 @@ public class MessageFile {
     public static String noPermission;
 
     public static void init() {
-        message = JustStore.getInstance().getFileManager().getMessage();
+        message = JustStore.getFileManager().getMessage();
 
         help = getStringList("help");
         adminHelp = getStringList("admin-help");

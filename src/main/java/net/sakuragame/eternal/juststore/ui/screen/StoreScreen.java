@@ -84,7 +84,7 @@ public class StoreScreen extends BaseInventory {
                         )
                 )
                 .addComponent(new TextureComp("category_2", "0,0,0,30")
-                        .setText("global.eternal_store_category == 2 ? '&f&l装备' : '&7&l装备'")
+                        .setText("global.eternal_store_category == 2 ? '&f&l消耗' : '&7&l消耗'")
                         .setXY("category_1.x + 58*(w/960)", "category_1.y")
                         .setWidth("56*(w/960)")
                         .setHeight("23*(w/960)")

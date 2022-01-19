@@ -1,105 +1,57 @@
 package net.sakuragame.eternal.juststore.core;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
-import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.api.event.ShopPurchaseEvent;
 import net.sakuragame.eternal.juststore.api.event.ShopPurchasedEvent;
+import net.sakuragame.eternal.juststore.api.event.StorePurchaseEvent;
 import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
-import net.sakuragame.eternal.juststore.core.common.Charge;
-import net.sakuragame.eternal.juststore.core.shop.*;
+import net.sakuragame.eternal.juststore.core.shop.Goods;
+import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
+import net.sakuragame.eternal.juststore.core.shop.Shop;
+import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
-import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
-import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
-import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
-import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
-public class MallManager {
+public class StoreManager {
 
     private final JustStore plugin;
     private final HashMap<StoreType, Store> stores;
     private final HashMap<String, Shop> shops;
 
-    private final HashMap<UUID, String> openMap;
-    private final HashMap<UUID, StoreOrder> storeOrder;
-    private final HashMap<UUID, ShopOrder> shopOrder;
+    private final static HashMap<UUID, String> openMap = new HashMap<>();
+    private final static HashMap<UUID, StoreOrder> storeOrder = new HashMap<>();
+    private final static HashMap<UUID, ShopOrder> shopOrder = new HashMap<>();
 
-    public MallManager(JustStore plugin) {
+    public StoreManager(JustStore plugin) {
         this.plugin = plugin;
         this.stores = new HashMap<>();
         this.shops = new HashMap<>();
-        this.openMap = new HashMap<>();
-        this.storeOrder = new HashMap<>();
-        this.shopOrder = new HashMap<>();
     }
 
     public void init() {
-        plugin.getFileManager().loadStore();
-
-        plugin.getFileManager().loadShops();
+        JustStore.getFileManager().loadStore();
+        JustStore.getFileManager().loadShops();
         plugin.getLogger().info(String.format("已载入 %s 个商店", shops.size()));
     }
 
-    public void openShop(Player player, String shopID) {
-        openShop(player, shopID, 0);
-    }
-
-    public void openShop(Player player, String shopID, int category) {
-        UUID uuid = player.getUniqueId();
-
-        Shop shop = shops.get(shopID);
-        if (shop == null) return;
-
-        GoodsShelf shelf = shop.getShelf().get(category);
-        if (shelf == null) return;
-
-        if (!openMap.containsKey(uuid) || !openMap.get(uuid).equals(shop.getName())) {
-            CategoryComp categoryComp = new CategoryComp();
-            categoryComp.sendCategory(player, shop);
-        }
-
-        CommodityComp comp = new CommodityComp();
-        comp.sendShopGoods(player, shelf.getGoods());
-
-        Map<String, String> map = new HashMap<>();
-        map.put("eternal_shop_name", shop.getName());
-
-        PacketSender.sendSyncPlaceholder(player, map);
-        PacketSender.sendRunFunction(player, "default", "global.eternal_shop_category = " + category + ";", false);
-        PacketSender.sendOpenGui(player, ShopScreen.screenID);
-        openMap.put(player.getUniqueId(), shopID);
-    }
-
-    public void openStore(Player player, StoreType type) {
-        Store store = stores.get(type);
-        if (store == null) return;
-
-        CommodityComp comp = new CommodityComp();
-        comp.sendStoreGoods(player, store.getCommodities());
-
-        PacketSender.sendRunFunction(player, "default", "global.eternal_store_category = " + type.getId() + ";", false);
-        PacketSender.sendOpenGui(player, StoreScreen.screenID);
-    }
-
-    public Goods getGoods(Shop shop, int category, String goodsID) {
-        GoodsShelf shelf = shop.getShelf().get(category);
-        if (shelf != null) {
-            return shelf.getGoods().get(goodsID);
-        }
-
-        return null;
+    public List<String> getShopsKey() {
+        return new ArrayList<>(shops.keySet());
     }
 
     public void storeBuying(Player player, StoreType type, String commodityID) {
@@ -128,8 +80,14 @@ public class MallManager {
             return;
         }
 
+        amount = amount == null ? 1 : amount;
+
+        StorePurchaseEvent preEvent = new StorePurchaseEvent(player, type, commodityID, amount);
+        preEvent.call();
+        if (preEvent.isCancelled()) return;
+
         Charge charge = commodity.getCharge();
-        double price = amount == null ? commodity.getPrice() : commodity.getPrice() * amount;
+        double price = commodity.getPrice() * amount;
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
             MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
@@ -143,12 +101,11 @@ public class MallManager {
         }
         charge.withdraw(player, price);
 
-        amount = (amount == null) ? 1 : amount;
         boughtGoods.setAmount(amount * commodity.getAmount());
         player.getInventory().addItem(boughtGoods);
 
-        StorePurchasedEvent event = new StorePurchasedEvent(player, type, commodityID, amount);
-        event.call();
+        StorePurchasedEvent postEvent = new StorePurchasedEvent(player, type, commodityID, amount);
+        postEvent.call();
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
     }
@@ -157,29 +114,35 @@ public class MallManager {
         shopBuying(player, category, goodsID, null);
     }
 
-    public void shopBuying(Player player, int category, String goodsID, Integer amount) {
+    public void shopBuying(Player player, int categoryID, String goodsID, Integer amount) {
         UUID uuid = player.getUniqueId();
-        String openShop = getOpenShop(uuid);
-        if (openShop == null) {
+        String currentShop = getOpenShop(uuid);
+        if (currentShop == null) {
             player.closeInventory();
             return;
         }
 
-        Shop shop = shops.get(openShop);
-        Goods goods = getGoods(shop, category, goodsID);
+        Shop shop = getShop(currentShop);
+        Goods goods = getGoods(shop, categoryID, goodsID);
         if (goods == null) {
             player.closeInventory();
             return;
         }
 
+        String category = shop.getGoodsShelf(categoryID).getId();
+
         if (!goods.isSingle() && amount == null) {
             QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
             box.open(player, true);
-            addShopOrder(player.getUniqueId(), new ShopOrder(openShop, category, goods.getId()));
+            addShopOrder(player.getUniqueId(), new ShopOrder(currentShop, categoryID, goods.getId()));
             return;
         }
 
-        amount = (amount == null) ? 1 : amount;
+        amount = amount == null ? 1 : amount;
+
+        ShopPurchaseEvent preEvent = new ShopPurchaseEvent(player, currentShop, category, goodsID, amount);
+        preEvent.call();
+        if (preEvent.isCancelled()) return;
 
         Charge charge = goods.getCharge();
         double price = goods.getPrice() * amount;
@@ -208,15 +171,27 @@ public class MallManager {
         boughtGoods.setAmount(amount);
         player.getInventory().addItem(boughtGoods);
 
-        ShopPurchasedEvent event = new ShopPurchasedEvent(player, openShop, shop.getShelf().get(category).getId(), goodsID, amount);
-        event.call();
+        ShopPurchasedEvent postEvent = new ShopPurchasedEvent(player, currentShop, category, goodsID, amount);
+        postEvent.call();
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
     }
 
-    public void registerStore(StoreType type, YamlConfiguration yaml) {
-        stores.put(type, new Store(yaml));
-        plugin.getLogger().info(String.format("已加载 %s 商城( %s 件商品)", type.name(), stores.get(type).getCommodities().size()));
+    public Store getStore(StoreType type) {
+        return stores.get(type);
+    }
+
+    public Shop getShop(String id) {
+        return shops.get(id);
+    }
+
+    public Goods getGoods(Shop shop, int category, String goodsID) {
+        GoodsShelf shelf = shop.getGoodsShelf().get(category);
+        if (shelf != null) {
+            return shelf.getGoods().get(goodsID);
+        }
+
+        return null;
     }
 
     public void clearDate(UUID uuid) {
@@ -225,39 +200,50 @@ public class MallManager {
         shopOrder.remove(uuid);
     }
 
-    public void registerShop(String shopID, YamlConfiguration yaml) {
-        shops.put(shopID, new Shop(yaml));
+    public void registerStore(StoreType type, YamlConfiguration yaml) {
+        stores.put(type, new Store(yaml));
+        plugin.getLogger().info(String.format("已加载 %s 商城( %s 件商品)", type.name(), stores.get(type).getCommodities().size()));
     }
 
-    public void addStoreOrder(UUID uuid, StoreOrder order) {
-        storeOrder.put(uuid, order);
+    public void registerShop(String id, YamlConfiguration yaml) {
+        shops.put(id, new Shop(id, yaml));
     }
 
-    public void delStoreOrder(UUID uuid) {
-        storeOrder.remove(uuid);
+    public static boolean isCurrentOpenShop(Player player, String id) {
+        UUID uuid = player.getUniqueId();
+        if (!openMap.containsKey(uuid)) return false;
+        return openMap.get(uuid).equals(id);
     }
 
-    public StoreOrder getStoreOrder(UUID uuid) {
-        return storeOrder.get(uuid);
-    }
-
-    public List<String> getShopsKey() {
-        return new ArrayList<>(shops.keySet());
-    }
-
-    public String getOpenShop(UUID uuid) {
+    public static String getOpenShop(UUID uuid) {
         return openMap.get(uuid);
     }
 
-    public void addShopOrder(UUID uuid, ShopOrder order) {
+    public static void setOpenShop(Player player, String id) {
+        openMap.put(player.getUniqueId(), id);
+    }
+
+    public static void addStoreOrder(UUID uuid, StoreOrder order) {
+        storeOrder.put(uuid, order);
+    }
+
+    public static void delStoreOrder(UUID uuid) {
+        storeOrder.remove(uuid);
+    }
+
+    public static StoreOrder getStoreOrder(UUID uuid) {
+        return storeOrder.get(uuid);
+    }
+
+    public static void addShopOrder(UUID uuid, ShopOrder order) {
         shopOrder.put(uuid, order);
     }
 
-    public void delShopOrder(UUID uuid) {
+    public static void delShopOrder(UUID uuid) {
         shopOrder.remove(uuid);
     }
 
-    public ShopOrder getShopOrder(UUID uuid) {
+    public static ShopOrder getShopOrder(UUID uuid) {
         return shopOrder.get(uuid);
     }
 }

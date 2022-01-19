@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class Utils {
@@ -74,5 +75,15 @@ public class Utils {
 
             if (consume.size() == 0) return;
         }
+    }
+
+    public static long getNextDayTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        return calendar.getTimeInMillis() - System.currentTimeMillis();
     }
 }

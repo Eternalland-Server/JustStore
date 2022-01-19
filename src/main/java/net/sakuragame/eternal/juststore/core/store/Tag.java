@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Tag {
 
-    NONE(""),
+    NONE("0,0,0,0"),
     HOT("ui/store/tag/hot.png"),
     LIMIT("ui/store/tag/limit.png"),
     NEW("ui/store/tag/new.png");

@@ -7,9 +7,11 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEv
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.core.StoreManager;
 import net.sakuragame.eternal.juststore.core.store.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
+import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +32,7 @@ public class StoreListener implements Listener {
 
         if (!key.equals("G")) return;
 
-        JustStore.getMallManager().openStore(player, StoreType.Prop);
+        ScreenManager.openStore(player, StoreType.Prop);
     }
 
     @EventHandler
@@ -39,7 +41,7 @@ public class StoreListener implements Listener {
         if (!e.getScreenID().equals("function_hud")) return;
         if (!e.getCompID().equals("store")) return;
 
-        JustStore.getMallManager().openStore(player, StoreType.Prop);
+        ScreenManager.openStore(player, StoreType.Prop);
     }
 
     @EventHandler
@@ -61,7 +63,7 @@ public class StoreListener implements Listener {
             StoreType type = StoreType.match(id);
             if (type == null) return;
 
-            JustStore.getMallManager().openStore(player, type);
+            ScreenManager.openStore(player, type);
             return;
         }
 
@@ -72,7 +74,7 @@ public class StoreListener implements Listener {
             StoreType type = StoreType.match(category);
             if (type == null) return;
 
-            JustStore.getMallManager().storeBuying(player, type, commodityID);
+            JustStore.getStoreManager().storeBuying(player, type, commodityID);
         }
     }
 
@@ -84,12 +86,12 @@ public class StoreListener implements Listener {
         String key = e.getKey();
         if (!key.equals(Operation.StoreOrder.name())) return;
 
-        StoreOrder order = JustStore.getMallManager().getStoreOrder(uuid);
+        StoreOrder order = StoreManager.getStoreOrder(uuid);
         if (order == null) return;
 
         int count = e.getCount();
 
-        JustStore.getMallManager().storeBuying(player, order.getType(), order.getCommodityID(), count);
+        JustStore.getStoreManager().storeBuying(player, order.getType(), order.getCommodityID(), count);
         QuantityScreen.hide(player);
     }
 
@@ -101,7 +103,8 @@ public class StoreListener implements Listener {
         if (!key.equals(Operation.StoreOrder.name())) return;
 
         e.setCancelled(true);
-        JustStore.getMallManager().delStoreOrder(player.getUniqueId());
+        StoreManager.delStoreOrder(player.getUniqueId());
         QuantityScreen.hide(player);
     }
+
 }

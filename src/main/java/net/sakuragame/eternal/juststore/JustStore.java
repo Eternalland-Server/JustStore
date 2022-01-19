@@ -1,12 +1,15 @@
 package net.sakuragame.eternal.juststore;
 
 import net.sakuragame.eternal.juststore.commands.MainCommand;
-import net.sakuragame.eternal.juststore.core.MallManager;
+import net.sakuragame.eternal.juststore.core.StoreManager;
+import net.sakuragame.eternal.juststore.core.UserManager;
 import net.sakuragame.eternal.juststore.file.FileManager;
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.listener.PlayerListener;
+import net.sakuragame.eternal.juststore.listener.PurchaseListener;
 import net.sakuragame.eternal.juststore.listener.ShopListener;
 import net.sakuragame.eternal.juststore.listener.StoreListener;
+import net.sakuragame.eternal.juststore.storge.StorageManager;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,9 +17,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class JustStore extends JavaPlugin {
     @Getter private static JustStore instance;
 
-    @Getter private FileManager fileManager;
-    private MallManager mallManager;
-    private ScreenManager screenManager;
+    @Getter private static FileManager fileManager;
+    @Getter private static StoreManager storeManager;
+    @Getter private static ScreenManager screenManager;
+    @Getter private static StorageManager storageManager;
+    @Getter private static UserManager userManager;
 
     @Override
     public void onEnable() {
@@ -25,15 +30,22 @@ public class JustStore extends JavaPlugin {
         instance = this;
 
         fileManager = new FileManager(this);
-        mallManager = new MallManager(this);
-        screenManager = new ScreenManager();
         fileManager.init();
-        mallManager.init();
+
+        storeManager = new StoreManager(this);
+        storeManager.init();
+
+        screenManager = new ScreenManager();
         screenManager.init();
+
+        storageManager = new StorageManager();
+
+        userManager = new UserManager();
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new StoreListener(), this);
         Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PurchaseListener(), this);
         getCommand("jstore").setExecutor(new MainCommand());
 
         long end = System.currentTimeMillis();
@@ -53,14 +65,6 @@ public class JustStore extends JavaPlugin {
 
     public void reload() {
         fileManager.init();
-        mallManager.init();
-    }
-
-    public static MallManager getMallManager() {
-        return instance.mallManager;
-    }
-
-    public static ScreenManager getScreenManager() {
-        return instance.screenManager;
+        storeManager.init();
     }
 }

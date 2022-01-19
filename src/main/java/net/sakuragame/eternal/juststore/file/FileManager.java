@@ -75,7 +75,7 @@ public class FileManager extends JustConfiguration {
         Arrays.stream(child).filter(sub -> sub.getName().endsWith(".yml")).forEach(sub -> {
             String shopID = sub.getName().replace(".yml", "");
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(sub);
-            JustStore.getMallManager().registerShop(shopID, yaml);
+            JustStore.getStoreManager().registerShop(shopID, yaml);
         });
     }
 
@@ -87,7 +87,7 @@ public class FileManager extends JustConfiguration {
             if (!sub.exists()) continue;
 
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(sub);
-            JustStore.getMallManager().registerStore(type, yaml);
+            JustStore.getStoreManager().registerStore(type, yaml);
         }
     }
 }

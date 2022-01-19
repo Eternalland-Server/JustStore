@@ -1,4 +1,4 @@
-package net.sakuragame.eternal.juststore.util;
+package net.sakuragame.eternal.juststore.ui;
 
 import com.taylorswiftcn.megumi.uifactory.generate.function.Statements;
 import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
@@ -10,20 +10,21 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.core.UserPurchaseData;
 import net.sakuragame.eternal.juststore.core.shop.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Tag;
-import net.sakuragame.eternal.juststore.ui.Operation;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class StoreUtil {
+public class ScreenHandler {
 
     private static final JustStore plugin = JustStore.getInstance();
 
-    public static LinkedList<BasicComponent> buildGoodsComponent(Player player, int index, Goods goods) {
+    public static LinkedList<BasicComponent> build(Player player, int index, Goods goods) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
         String y = (index == 1 ? "goods_scrollbar_region.y" : "goods_" + (index - 1) + ".y + 51");
@@ -128,7 +129,7 @@ public class StoreUtil {
         return components;
     }
 
-    public static LinkedList<BasicComponent> buildCommodityComponent(Player player, int index, Commodity commodity) {
+    public static LinkedList<BasicComponent> build(Player player, int index, Commodity commodity) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
         String bodyID = "goods_" + index;
@@ -136,7 +137,7 @@ public class StoreUtil {
         String priceID = bodyID + "+price";
         String itemID = bodyID + "_item";
         String tagID = bodyID + "_tag";
-        String buyID = bodyID + "_buy";
+        String buyID = commodity.getId() + "_buy";
 
         String x = getX(index - 1);
         String y = getY(index - 1);
@@ -165,8 +166,13 @@ public class StoreUtil {
                 .setXY(bodyID + ".x + 18.4*(w/960)", bodyID + ".y + 18.4*(w/960)")
                 .setScale("2.7*(w/960)")
         );
+
+        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+        String commodityID = commodity.getId();
+        Integer limit = ConfigFile.purchaseLimit.get(commodityID);
+        String buyText = limit != null ? "&f&l购买(" + account.getCount(commodityID) + "/" + limit + ")" : "&f&l购买";
         components.add(new TextureComp(buyID)
-                .setText("&f&l购买")
+                .setText(buyText)
                 .setTexture("ui/common/button_normal_a.png")
                 .setXY(bodyID + ".x + 8*(w/960)", bodyID + ".y + 87*(w/960)")
                 .setCompSize("64*(w/960)", "24*(w/960)")

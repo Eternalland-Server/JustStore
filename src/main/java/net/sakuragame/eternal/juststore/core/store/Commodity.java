@@ -3,8 +3,7 @@ package net.sakuragame.eternal.juststore.core.store;
 import com.taylorswiftcn.justwei.util.UnitConvert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Value;
-import net.sakuragame.eternal.juststore.core.common.Charge;
+import net.sakuragame.eternal.juststore.core.Charge;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 

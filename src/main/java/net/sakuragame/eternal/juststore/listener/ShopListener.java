@@ -5,8 +5,10 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEv
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.core.StoreManager;
 import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
 import net.sakuragame.eternal.juststore.ui.Operation;
+import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,19 +42,19 @@ public class ShopListener implements Listener {
             int category = e.getParams().getParamI(2);
             String goodsID = e.getParams().getParam(3);
 
-            JustStore.getMallManager().shopBuying(player, category, goodsID);
+            JustStore.getStoreManager().shopBuying(player, category, goodsID);
         }
     }
 
     private void handleCategory(Player player, int category) {
         UUID uuid = player.getUniqueId();
-        String openShop = JustStore.getMallManager().getOpenShop(uuid);
+        String openShop = StoreManager.getOpenShop(uuid);
         if (openShop == null) {
             player.closeInventory();
             return;
         }
 
-        JustStore.getMallManager().openShop(player, openShop, category);
+        ScreenManager.openShop(player, openShop, category);
     }
 
     @EventHandler
@@ -63,12 +65,12 @@ public class ShopListener implements Listener {
         String key = e.getKey();
         if (!key.equals(Operation.ShopOrder.name())) return;
 
-        ShopOrder order = JustStore.getMallManager().getShopOrder(uuid);
+        ShopOrder order = StoreManager.getShopOrder(uuid);
         if (order == null) return;
 
         int count = e.getCount();
 
-        JustStore.getMallManager().shopBuying(player, order.getCategory(), order.getGoodsID(), count);
+        JustStore.getStoreManager().shopBuying(player, order.getCategory(), order.getGoodsID(), count);
         QuantityScreen.hide(player);
     }
 
@@ -80,7 +82,7 @@ public class ShopListener implements Listener {
         if (!key.equals(Operation.ShopOrder.name())) return;
 
         e.setCancelled(true);
-        JustStore.getMallManager().delShopOrder(player.getUniqueId());
+        StoreManager.delShopOrder(player.getUniqueId());
         QuantityScreen.hide(player);
     }
 }
