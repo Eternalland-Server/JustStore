@@ -33,7 +33,7 @@ public class Commodity {
 
     public String getPriceFormat() {
         String s = getPrice() >= 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, getPrice()) : Utils.formatting(getPrice());
-        return charge.getSymbol() + " " + s + " &6" + charge.getCurrency().getDisplay();
+        return charge.getSymbol() + " " + s + " " + charge.getColor() + charge.getCurrency().getDisplay();
     }
 
     public String getSlot() {
