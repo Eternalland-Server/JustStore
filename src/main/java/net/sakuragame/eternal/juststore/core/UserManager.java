@@ -29,7 +29,7 @@ public class UserManager {
         return account.get(uuid);
     }
 
-    public void delAccount(UUID uuid) {
+    public void removeAccount(UUID uuid) {
         account.remove(uuid);
     }
 }

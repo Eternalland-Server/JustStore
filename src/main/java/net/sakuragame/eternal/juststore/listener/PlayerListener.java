@@ -26,7 +26,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPreLoginMonitor(AsyncPlayerPreLoginEvent event) {
         if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
-            JustStore.getUserManager().delAccount(event.getUniqueId());
+            JustStore.getUserManager().removeAccount(event.getUniqueId());
         }
     }
 
