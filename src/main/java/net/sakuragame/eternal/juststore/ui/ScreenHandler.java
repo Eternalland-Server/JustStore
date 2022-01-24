@@ -69,10 +69,9 @@ public class ScreenHandler {
         Map<String, Integer> consume = goods.getConsume();
         List<String> keys = new ArrayList<>(consume.keySet());
         if (keys.size() != 0) {
-            components.add(new LabelComp(requireID, "&a需要材料:")
+            components.add(new LabelComp(requireID, "&7需要材料:")
                     .setX(nameID + ".x")
-                    .setY(nameID + ".y + 14")
-                    .setScale(0.8)
+                    .setY(nameID + ".y + 12")
             );
             int i = 0;
             for (String key : consume.keySet()) {
