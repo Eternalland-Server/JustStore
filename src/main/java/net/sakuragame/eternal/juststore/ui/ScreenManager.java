@@ -45,7 +45,7 @@ public class ScreenManager {
         GoodsShelf shelf = shop.getGoodsShelf().get(category);
         if (shelf == null) return;
 
-        if (StoreManager.isCurrentOpenShop(player, id)) {
+        if (!StoreManager.isCurrentOpenShop(player, id)) {
             CategoryComp categoryComp = new CategoryComp();
             categoryComp.sendCategory(player, shop);
         }
