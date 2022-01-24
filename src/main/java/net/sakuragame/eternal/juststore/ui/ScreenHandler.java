@@ -61,7 +61,7 @@ public class ScreenHandler {
                 .setY(nameID + ".y")
         );
         components.add(new TextureComp(consumeID)
-                .setXY(requireID + ".x", requireID + ".y + 8")
+                .setXY(requireID + ".x", requireID + ".y + 9")
         );
 
         PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null));
