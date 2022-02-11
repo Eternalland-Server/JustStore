@@ -165,7 +165,7 @@ public class StoreScreen extends BaseInventory {
                         .setXY("category_bar.x", "category_bar.y + 36*(w/960)")
                         .setCompSize("436*(w/960)", "252*(w/960)")
                 )
-                .addComponent(new LabelComp("tip_contents", "&6&lTIP.&f商场所有的东西都很好多买点，有意身心健康，&6樱花&f说他也非常喜欢买这个东西&7充3w没有解决不了的事情")
+                .addComponent(new LabelComp("tip_contents", "%eternal_store_tip%")
                         .setXY("tip_frame.x + 12*(w/960)", "tip_frame.y + 12*(w/960)")
                         .setScale("w/960")
                 );

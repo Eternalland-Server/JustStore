@@ -14,6 +14,7 @@ public class ConfigFile {
 
     public static String prefix;
 
+    public static List<String> tip;
     public static Map<String, Double> discount;
     public static Map<String, Integer> purchaseLimit;
 
@@ -21,6 +22,8 @@ public class ConfigFile {
         config = JustStore.getFileManager().getConfig();
 
         prefix = getString("Prefix");
+        tip = getStringList("tip");
+        loadDiscount();
         loadPurchaseLimit();
     }
 

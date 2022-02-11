@@ -9,10 +9,12 @@ import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
 import net.sakuragame.eternal.juststore.core.shop.Shop;
 import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
 import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
 import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
+import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -70,6 +72,11 @@ public class ScreenManager {
         CommodityComp comp = new CommodityComp();
         comp.sendStoreGoods(player, store.getCommodities());
 
+        PacketSender.sendSyncPlaceholder(player,
+                new HashMap<String, String>() {{
+                    put("eternal_store_tip", String.join("\n", ConfigFile.tip).replace("<discount>", Utils.getDiscount(player) * 10 + "折"));
+                }}
+        );
         PacketSender.sendRunFunction(player, "default", "global.eternal_store_category = " + type.getId() + ";", false);
         PacketSender.sendOpenGui(player, StoreScreen.screenID);
     }
