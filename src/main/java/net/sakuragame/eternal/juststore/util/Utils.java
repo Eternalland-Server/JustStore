@@ -3,6 +3,7 @@ package net.sakuragame.eternal.juststore.util;
 import com.taylorswiftcn.justwei.util.MegumiUtil;
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import ink.ptms.zaphkiel.api.Item;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,16 @@ public class Utils {
 
     private final static ZaphkielAPI zap = ZaphkielAPI.INSTANCE;
     private final static DecimalFormat a = new DecimalFormat("0");
+
+    public static double getDiscount(Player player) {
+        for (String key : ConfigFile.discount.keySet()) {
+            double discount = ConfigFile.discount.get(key);
+            if (!player.hasPermission("eternal." + key)) continue;
+            return discount;
+        }
+
+        return 1;
+    }
 
     public static String formatting(double value) {
         return a.format(value);

@@ -87,7 +87,7 @@ public class StoreManager {
         if (preEvent.isCancelled()) return;
 
         Charge charge = commodity.getCharge();
-        double price = commodity.getPrice() * amount;
+        double price = commodity.getPrice() * amount * Utils.getDiscount(player);
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
             MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());

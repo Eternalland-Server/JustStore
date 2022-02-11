@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.sakuragame.eternal.juststore.core.Charge;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 @Getter
 @AllArgsConstructor
@@ -31,8 +32,9 @@ public class Commodity {
         this.price = section.getDouble("price");
     }
 
-    public String getPriceFormat() {
-        String s = getPrice() >= 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, getPrice()) : Utils.formatting(getPrice());
+    public String getPriceFormat(Player player) {
+        double lastPrice = getPrice() * Utils.getDiscount(player);
+        String s = getPrice() >= 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, lastPrice) : Utils.formatting(lastPrice);
         return charge.getSymbol() + " " + s + " " + charge.getColor() + charge.getCurrency().getDisplay();
     }
 

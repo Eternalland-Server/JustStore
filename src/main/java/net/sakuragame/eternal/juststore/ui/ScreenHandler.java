@@ -154,7 +154,7 @@ public class ScreenHandler {
                 .setScale("w/960")
         );
         components.add(new TextureComp(priceID)
-                .setText(commodity.getPriceFormat())
+                .setText(commodity.getPriceFormat(player))
                 .setTexture("0,0,0,0")
                 .setXY(bodyID + ".x", nameID + ".y + 11*(w/960)")
                 .setCompSize("80", "10")
@@ -169,7 +169,7 @@ public class ScreenHandler {
         UserPurchaseData account = JustStore.getUserManager().getAccount(player);
         String commodityID = commodity.getId();
         Integer limit = ConfigFile.purchaseLimit.get(commodityID);
-        String buyText = limit != null ? "&f&l购买(" + account.getCount(commodityID) + "/" + limit + ")" : "&f&l购买";
+        String buyText = (limit != null) ? "&f&l购买(" + account.getCount(commodityID) + "/" + limit + ")" : "&f&l购买";
         components.add(new TextureComp(buyID)
                 .setText(buyText)
                 .setTexture("ui/common/button_normal_a.png")

@@ -1,6 +1,5 @@
 package net.sakuragame.eternal.juststore.api;
 
-import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.entity.Player;
 

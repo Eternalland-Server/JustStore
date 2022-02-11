@@ -1,3 +1,7 @@
 Prefix: '[JustShop]'
+discount:
+  vip: 0.9
+  svp: 0.8
+  mvp: 0.7
 purchase-limit:
   goods_1: 1

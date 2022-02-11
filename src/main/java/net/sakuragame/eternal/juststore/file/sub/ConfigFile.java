@@ -14,6 +14,7 @@ public class ConfigFile {
 
     public static String prefix;
 
+    public static Map<String, Double> discount;
     public static Map<String, Integer> purchaseLimit;
 
     public static void init() {
@@ -29,6 +30,18 @@ public class ConfigFile {
 
     private static List<String> getStringList(String path) {
         return MegumiUtil.onReplace(config.getStringList(path));
+    }
+
+    private static void loadDiscount() {
+        discount = new HashMap<>();
+
+        ConfigurationSection section = config.getConfigurationSection("discount");
+        if (section == null) return;
+
+        for (String key : section.getKeys(false)) {
+            double percent = section.getDouble(key);
+            discount.put(key, percent);
+        }
     }
 
     private static void loadPurchaseLimit() {
