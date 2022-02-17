@@ -22,7 +22,7 @@ public class CommodityComp extends BaseInventory {
         super(shopID);
     }
 
-    public void sendShopGoods(Player player, Map<String, Goods> goodsList) {
+    public void send(Player player, Map<String, Goods> goodsList) {
         ScreenUI ui = new ScreenUI(shopID);
 
         int surplus = Math.max(0, goodsList.size() - 4);

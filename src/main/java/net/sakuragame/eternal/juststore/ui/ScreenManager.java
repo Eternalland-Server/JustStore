@@ -12,6 +12,9 @@ import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
 import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
+import net.sakuragame.eternal.juststore.ui.comp.economy.CurrencyComp;
+import net.sakuragame.eternal.juststore.ui.comp.economy.EconomyComp;
+import net.sakuragame.eternal.juststore.ui.comp.economy.FishComp;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
 import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
 import net.sakuragame.eternal.juststore.util.Utils;
@@ -47,13 +50,16 @@ public class ScreenManager {
         GoodsShelf shelf = shop.getGoodsShelf().get(category);
         if (shelf == null) return;
 
+        CurrencyComp currencyComp = shop.isFish() ? new FishComp() : new EconomyComp();
+        currencyComp.send(player);
+
         if (!StoreManager.isCurrentOpenShop(player, id)) {
             CategoryComp categoryComp = new CategoryComp();
-            categoryComp.sendCategory(player, shop);
+            categoryComp.send(player, shop);
         }
 
         CommodityComp comp = new CommodityComp();
-        comp.sendShopGoods(player, shelf.getGoods());
+        comp.send(player, shelf.getGoods());
 
         Map<String, String> map = new HashMap<>();
         map.put("eternal_shop_name", shop.getName());

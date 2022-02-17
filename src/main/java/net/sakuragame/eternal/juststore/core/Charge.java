@@ -10,7 +10,8 @@ public enum Charge {
 
     MONEY("money", "&6", EternalCurrency.Money),
     COINS("coins", "&b", EternalCurrency.Coins),
-    POINTS("points", "&c", EternalCurrency.Points);
+    POINTS("points", "&c", EternalCurrency.Points),
+    Fish("fish", "&a", EternalCurrency.Fish);
 
     private final String id;
     private final String color;

@@ -13,11 +13,13 @@ public class Shop {
 
     private final String id;
     private final String name;
+    private final boolean isFish;
     private final LinkedHashMap<Integer, GoodsShelf> goodsShelf;
 
     public Shop(String id, YamlConfiguration yaml) {
         this.id = id;
         this.name = yaml.getString("name");
+        this.isFish = yaml.getBoolean("fish", false);
         this.goodsShelf = new LinkedHashMap<>();
 
         for (String key : yaml.getKeys(false)) {

@@ -19,7 +19,7 @@ public class CategoryComp extends BaseInventory {
         super(screenID);
     }
 
-    public void sendCategory(Player player, Shop shop) {
+    public void send(Player player, Shop shop) {
 
         for (int i = 0; i < Math.min(6, shop.getGoodsShelf().size()); i++) {
             String name = shop.getGoodsShelf().get(i).getName();
