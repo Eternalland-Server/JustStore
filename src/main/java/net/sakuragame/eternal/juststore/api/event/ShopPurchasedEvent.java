@@ -1,39 +1,21 @@
 package net.sakuragame.eternal.juststore.api.event;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 
 @Getter
-public class ShopPurchasedEvent extends PlayerEvent {
+public class ShopPurchasedEvent extends JustEvent {
 
     private final String shopID;
     private final String category;
     private final String goodsID;
-    private final int amount;
+    private final int quantity;
 
-    private final static HandlerList handlerList = new HandlerList();
-
-    public ShopPurchasedEvent(Player who, String shopID, String category, String goodsID, int amount) {
+    public ShopPurchasedEvent(Player who, String shopID, String category, String goodsID, int quantity) {
         super(who);
         this.shopID = shopID;
         this.category = category;
         this.goodsID = goodsID;
-        this.amount = amount;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return getHandlerList();
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlerList;
-    }
-
-    public void call() {
-        Bukkit.getPluginManager().callEvent(this);
+        this.quantity = quantity;
     }
 }

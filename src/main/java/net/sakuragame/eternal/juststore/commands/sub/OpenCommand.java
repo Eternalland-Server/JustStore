@@ -3,6 +3,7 @@ package net.sakuragame.eternal.juststore.commands.sub;
 import com.taylorswiftcn.justwei.commands.sub.SubCommand;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.commands.CommandPerms;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -23,17 +24,17 @@ public class OpenCommand extends SubCommand {
 
         Player player = Bukkit.getPlayerExact(s1);
         if (player == null) {
-            sender.sendMessage(" §7玩家不在线");
+            sender.sendMessage(ConfigFile.prefix + "玩家不在线");
             return;
         }
 
         if (!JustStore.getStoreManager().getShopsKey().contains(s2)) {
-            sender.sendMessage(" §7没有该商店");
+            sender.sendMessage(ConfigFile.prefix + "没有该商店");
             return;
         }
 
         ScreenManager.openShop(player, s2);
-        sender.sendMessage(" §7已为该玩家打开商店");
+        sender.sendMessage(ConfigFile.prefix + "已为该玩家打开商店");
     }
 
     @Override

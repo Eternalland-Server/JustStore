@@ -4,18 +4,18 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 
 @Getter
-public class ShopPurchaseEvent extends JustEvent {
+public class ShopSoldEvent extends JustEvent {
 
     private final String shopID;
     private final String category;
     private final String goodsID;
-    private final int quantity;
+    private final int amount;
 
-    public ShopPurchaseEvent(Player who, String shopID, String category, String goodsID, int quantity) {
+    public ShopSoldEvent(Player who, String shopID, String category, String goodsID, int amount) {
         super(who);
         this.shopID = shopID;
         this.category = category;
         this.goodsID = goodsID;
-        this.quantity = quantity;
+        this.amount = amount;
     }
 }

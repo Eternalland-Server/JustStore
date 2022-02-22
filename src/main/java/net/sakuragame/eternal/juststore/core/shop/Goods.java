@@ -1,5 +1,6 @@
 package net.sakuragame.eternal.juststore.core.shop;
 
+import com.taylorswiftcn.justwei.util.MegumiUtil;
 import com.taylorswiftcn.justwei.util.UnitConvert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class Goods {
     private final String item;
     private final String name;
     private final boolean single;
+    private final boolean sell;
+    private final int amount;
     private final Charge charge;
     private final Double price;
     private final LinkedHashMap<String, Integer> consume;
@@ -24,8 +27,10 @@ public class Goods {
     public Goods(String id, ConfigurationSection section) {
         this.id = id;
         this.item = section.getString("item");
-        this.name = section.getString("name");
+        this.name = MegumiUtil.onReplace(section.getString("name"));
         this.single = section.getBoolean("single");
+        this.sell = section.getBoolean("sell", false);
+        this.amount = section.getInt("amount", 1);
         this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price");
         this.consume = new LinkedHashMap<>();

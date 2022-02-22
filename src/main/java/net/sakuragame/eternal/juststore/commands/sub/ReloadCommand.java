@@ -2,6 +2,8 @@ package net.sakuragame.eternal.juststore.commands.sub;
 
 import com.taylorswiftcn.justwei.commands.sub.SubCommand;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.commands.CommandPerms;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import org.bukkit.command.CommandSender;
 
 public class ReloadCommand extends SubCommand {
@@ -14,7 +16,7 @@ public class ReloadCommand extends SubCommand {
     @Override
     public void perform(CommandSender sender, String[] args) {
         JustStore.getInstance().reload();
-        sender.sendMessage("reload done!");
+        sender.sendMessage(ConfigFile.prefix + "重载成功!");
     }
 
     @Override
@@ -24,6 +26,6 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return null;
+        return CommandPerms.ADMIN.getNode();
     }
 }

@@ -2,13 +2,11 @@ package net.sakuragame.eternal.juststore.core;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
+import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.api.event.ShopPurchaseEvent;
-import net.sakuragame.eternal.juststore.api.event.ShopPurchasedEvent;
-import net.sakuragame.eternal.juststore.api.event.StorePurchaseEvent;
-import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
+import net.sakuragame.eternal.juststore.api.event.*;
 import net.sakuragame.eternal.juststore.core.shop.Goods;
 import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
 import net.sakuragame.eternal.juststore.core.shop.Shop;
@@ -17,16 +15,14 @@ import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class StoreManager {
 
@@ -58,7 +54,7 @@ public class StoreManager {
         storeBuying(player, type, commodityID, null);
     }
 
-    public void storeBuying(Player player, StoreType type, String commodityID, Integer amount) {
+    public void storeBuying(Player player, StoreType type, String commodityID, Integer quantity) {
         UUID uuid = player.getUniqueId();
 
         Store store = stores.get(type);
@@ -73,21 +69,21 @@ public class StoreManager {
             return;
         }
 
-        if (!commodity.isSingle() && amount == null) {
+        if (!commodity.isSingle() && quantity == null) {
             QuantityBox box = new QuantityBox(Operation.StoreOrder.name(), "&6&l购买数量", "&f&l" + commodity.getName());
             box.open(player, true);
             addStoreOrder(uuid, new StoreOrder(type, commodityID));
             return;
         }
 
-        amount = amount == null ? 1 : amount;
+        quantity = quantity == null ? 1 : quantity;
 
-        StorePurchaseEvent preEvent = new StorePurchaseEvent(player, type, commodityID, amount);
+        StorePurchaseEvent preEvent = new StorePurchaseEvent(player, type, commodityID, quantity);
         preEvent.call();
         if (preEvent.isCancelled()) return;
 
         Charge charge = commodity.getCharge();
-        double price = commodity.getPrice() * amount * Utils.getDiscount(player);
+        double price = commodity.getPrice() * quantity * Utils.getDiscount(player);
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
             MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
@@ -101,10 +97,10 @@ public class StoreManager {
         }
         charge.withdraw(player, price);
 
-        boughtGoods.setAmount(amount * commodity.getAmount());
+        boughtGoods.setAmount(quantity * commodity.getAmount());
         player.getInventory().addItem(boughtGoods);
 
-        StorePurchasedEvent postEvent = new StorePurchasedEvent(player, type, commodityID, amount);
+        StorePurchasedEvent postEvent = new StorePurchasedEvent(player, type, commodityID, quantity);
         postEvent.call();
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
@@ -114,7 +110,7 @@ public class StoreManager {
         shopBuying(player, category, goodsID, null);
     }
 
-    public void shopBuying(Player player, int categoryID, String goodsID, Integer amount) {
+    public void shopBuying(Player player, int categoryID, String goodsID, Integer quantity) {
         UUID uuid = player.getUniqueId();
         String currentShop = getOpenShop(uuid);
         if (currentShop == null) {
@@ -131,21 +127,21 @@ public class StoreManager {
 
         String category = shop.getGoodsShelf(categoryID).getId();
 
-        if (!goods.isSingle() && amount == null) {
+        if (!goods.isSingle() && quantity == null) {
             QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
             box.open(player, true);
             addShopOrder(player.getUniqueId(), new ShopOrder(currentShop, categoryID, goods.getId()));
             return;
         }
 
-        amount = amount == null ? 1 : amount;
+        quantity = quantity == null ? 1 : quantity;
 
-        ShopPurchaseEvent preEvent = new ShopPurchaseEvent(player, currentShop, category, goodsID, amount);
+        ShopPurchaseEvent preEvent = new ShopPurchaseEvent(player, currentShop, category, goodsID, quantity);
         preEvent.call();
         if (preEvent.isCancelled()) return;
 
         Charge charge = goods.getCharge();
-        double price = goods.getPrice() * amount;
+        double price = goods.getPrice() * quantity;
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
             MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
@@ -153,12 +149,12 @@ public class StoreManager {
         }
 
         if (goods.getConsume().size() != 0) {
-            if (!Utils.checkItem(player, goods.getConsume(amount))) {
+            if (!Utils.checkItem(player, goods.getConsume(quantity))) {
                 MessageAPI.sendActionTip(player, "&c&l购买失败，背包内材料不足");
                 return;
             }
 
-            Utils.consumeItem(player, goods.getConsume(amount));
+            Utils.consumeItem(player, goods.getConsume(quantity));
         }
 
         ItemStack boughtGoods = ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), player);
@@ -168,13 +164,51 @@ public class StoreManager {
         }
         charge.withdraw(player, price);
 
-        boughtGoods.setAmount(amount);
+        boughtGoods.setAmount(quantity * goods.getAmount());
         player.getInventory().addItem(boughtGoods);
 
-        ShopPurchasedEvent postEvent = new ShopPurchasedEvent(player, currentShop, category, goodsID, amount);
+        ShopPurchasedEvent postEvent = new ShopPurchasedEvent(player, currentShop, category, goodsID, quantity);
         postEvent.call();
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
+        player.sendMessage(ConfigFile.prefix + "你购买了 " + goods.getName());
+    }
+
+    public void shopSelling(Player player, int categoryID, String goodsID, int quantity) {
+        UUID uuid = player.getUniqueId();
+        String currentShop = getOpenShop(uuid);
+        if (currentShop == null) {
+            player.closeInventory();
+            return;
+        }
+
+        Shop shop = getShop(currentShop);
+        Goods goods = getGoods(shop, categoryID, goodsID);
+        if (goods == null) {
+            player.closeInventory();
+            return;
+        }
+
+        String category = shop.getGoodsShelf(categoryID).getId();
+
+        ShopSellEvent sellEvent = new ShopSellEvent(player, currentShop, category, goodsID, quantity);
+        sellEvent.call();
+        if (sellEvent.isCancelled()) return;
+
+        Charge charge = goods.getCharge();
+        double price = goods.getPrice() * quantity;
+
+        Map<String, Integer> sellItem = new HashMap<String, Integer>() {{ put(goods.getItem(), goods.getAmount()); }};
+        if (!Utils.checkItem(player, new HashMap<>(sellItem))) {
+            MessageAPI.sendActionTip(player, "&c&l出售失败，你背包内没有足够的 " + goods.getName());
+            return;
+        }
+
+        EternalCurrency currency = charge.getCurrency();
+        Utils.consumeItem(player, sellItem);
+        GemsEconomyAPI.deposit(uuid, price, charge.getCurrency());
+        MessageAPI.sendActionTip(player, "&a&l出售成功！");
+        player.sendMessage(ConfigFile.prefix + "§7你出售了 " + goods.getName() + " §7获得了 §f" + Utils.unitFormatting(price) + " §7" + currency.getDisplay());
     }
 
     public Store getStore(StoreType type) {

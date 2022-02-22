@@ -1,6 +1,7 @@
 package net.sakuragame.eternal.juststore.util;
 
 import com.taylorswiftcn.justwei.util.MegumiUtil;
+import com.taylorswiftcn.justwei.util.UnitConvert;
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import ink.ptms.zaphkiel.api.Item;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
@@ -10,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
 
@@ -31,7 +32,14 @@ public class Utils {
         return a.format(value);
     }
 
-    public static boolean checkItem(Player player, HashMap<String, Integer> consume) {
+    public static String unitFormatting(double value) {
+        if (value > 100000) {
+            UnitConvert.formatCN(UnitConvert.TenThousand, value);
+        }
+        return formatting(value);
+    }
+
+    public static boolean checkItem(Player player, Map<String, Integer> consume) {
         for (ItemStack item : player.getInventory().getContents()) {
             if (MegumiUtil.isEmpty(item)) continue;
 
@@ -55,8 +63,7 @@ public class Utils {
         return false;
     }
 
-    public static void consumeItem(Player player, HashMap<String, Integer> consume) {
-        System.out.println(consume.keySet());
+    public static void consumeItem(Player player, Map<String, Integer> consume) {
         for (int i = 0; i < player.getInventory().getSize(); i++) {
             ItemStack item = player.getInventory().getItem(i);
             if (MegumiUtil.isEmpty(item)) continue;

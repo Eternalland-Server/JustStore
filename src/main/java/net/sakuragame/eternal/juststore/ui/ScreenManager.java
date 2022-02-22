@@ -42,8 +42,6 @@ public class ScreenManager {
     }
 
     public static void openShop(Player player, String id, int category) {
-        UUID uuid = player.getUniqueId();
-
         Shop shop = JustStore.getStoreManager().getShop(id);
         if (shop == null) return;
 

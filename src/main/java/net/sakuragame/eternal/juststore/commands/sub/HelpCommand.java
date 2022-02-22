@@ -1,6 +1,7 @@
 package net.sakuragame.eternal.juststore.commands.sub;
 
 import com.taylorswiftcn.justwei.commands.sub.SubCommand;
+import net.sakuragame.eternal.juststore.commands.CommandPerms;
 import net.sakuragame.eternal.juststore.file.sub.MessageFile;
 import org.bukkit.command.CommandSender;
 
@@ -14,7 +15,7 @@ public class HelpCommand extends SubCommand {
     @Override
     public void perform(CommandSender CommandSender, String[] Strings) {
         MessageFile.help.forEach(CommandSender::sendMessage);
-        if (CommandSender.hasPermission("justrpg.admin"))
+        if (CommandSender.hasPermission(CommandPerms.ADMIN.getNode()))
             MessageFile.adminHelp.forEach(CommandSender::sendMessage);
     }
 

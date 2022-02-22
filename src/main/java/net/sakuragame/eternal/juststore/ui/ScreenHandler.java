@@ -35,7 +35,7 @@ public class ScreenHandler {
         String priceID = bodyID + "_price";
         String requireID = bodyID + "_require";
         String consumeID = bodyID + "_consume";
-        String buyID = bodyID + "_buy";
+        String operateID = bodyID + "_operate";
 
         components.add(new TextureComp(bodyID)
                 .setTexture("ui/store/shop/goods_bg.png")
@@ -64,66 +64,91 @@ public class ScreenHandler {
                 .setXY(requireID + ".x", requireID + ".y + 9")
         );
 
-        PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null));
+        ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null);
+        if (item != null) {
+            item.setAmount(goods.getAmount());
+        }
+        PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), item);
 
-        Map<String, Integer> consume = goods.getConsume();
-        List<String> keys = new ArrayList<>(consume.keySet());
-        if (keys.size() != 0) {
-            components.add(new LabelComp(requireID, "&7需要材料:")
-                    .setX(nameID + ".x")
-                    .setY(nameID + ".y + 12")
-            );
-            int i = 0;
-            for (String key : consume.keySet()) {
-                ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(key, null);
-                int amount = consume.get(key);
-                do {
-                    String id = "goods_" + index + "_slot_bg_" + i;
-                    components.add(new TextureComp(id)
-                            .setTexture("ui/pack/slot_bg.png")
-                            .setX(consumeID + ".x + 19*" + i)
-                            .setY(consumeID + ".y")
-                            .setCompSize(16, 16)
-                    );
-                    components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
-                            .setDrawBackground(false)
-                            .setXY(id + ".x + 2", id + ".y + 2")
-                            .setScale(0.75)
-                    );
+        if (!goods.isSell()) {
+            Map<String, Integer> consume = goods.getConsume();
+            List<String> keys = new ArrayList<>(consume.keySet());
+            if (keys.size() != 0) {
+                components.add(new LabelComp(requireID, "&7需要材料:")
+                        .setX(nameID + ".x")
+                        .setY(nameID + ".y + 12")
+                );
+                int i = 0;
+                for (String key : consume.keySet()) {
+                    ItemStack consumeItem = ZaphkielAPI.INSTANCE.getItemStack(key, null);
+                    int amount = consume.get(key);
+                    do {
+                        String id = "goods_" + index + "_slot_bg_" + i;
+                        components.add(new TextureComp(id)
+                                .setTexture("ui/pack/slot_bg.png")
+                                .setX(consumeID + ".x + 19*" + i)
+                                .setY(consumeID + ".y")
+                                .setCompSize(16, 16)
+                        );
+                        components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
+                                .setDrawBackground(false)
+                                .setXY(id + ".x + 2", id + ".y + 2")
+                                .setScale(0.75)
+                        );
 
-                    if (item != null) {
-                        if (amount > 64) {
-                            item.setAmount(64);
-                            amount = amount - 64;
+                        if (consumeItem != null) {
+                            if (amount > 64) {
+                                consumeItem.setAmount(64);
+                                amount = amount - 64;
+                            }
+                            else {
+                                consumeItem.setAmount(amount);
+                                amount = 0;
+                            }
+                            PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), consumeItem);
                         }
-                        else {
-                            item.setAmount(amount);
-                            amount = 0;
-                        }
-                        PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), item);
-                    }
-                    i++;
-                } while (amount != 0);
+                        i++;
+                    } while (amount != 0);
+                }
             }
         }
 
-
-        components.add(new TextureComp(buyID)
-                .setTexture("ui/store/button/buy.png")
-                .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
-                .setCompSize(40, 16)
-                .addAction(ActionType.Left_Click, new Statements()
-                        .add("func.Sound_Play();")
-                        .add(buyID + ".texture = 'ui/store/button/buy_press.png';")
-                        .build()
-                )
-                .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/store/button/buy.png';")
-                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
-                        .addValue(Operation.Buy.getId())
-                        .add("global.eternal_shop_category")
-                        .addValue(goods.getId())
-                )
-        );
+        if (goods.isSell()) {
+            components.add(new TextureComp(operateID)
+                    .setTexture("ui/store/button/sell.png")
+                    .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
+                    .setCompSize(40, 16)
+                    .addAction(ActionType.Left_Click, new Statements()
+                            .add("func.Sound_Play();")
+                            .add(operateID + ".texture = 'ui/store/button/sell_press.png';")
+                            .build()
+                    )
+                    .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/sell.png';")
+                    .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                            .addValue(Operation.Sell.getId())
+                            .add("global.eternal_shop_category")
+                            .addValue(goods.getId())
+                    )
+            );
+        }
+        else {
+            components.add(new TextureComp(operateID)
+                    .setTexture("ui/store/button/buy.png")
+                    .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
+                    .setCompSize(40, 16)
+                    .addAction(ActionType.Left_Click, new Statements()
+                            .add("func.Sound_Play();")
+                            .add(operateID + ".texture = 'ui/store/button/buy_press.png';")
+                            .build()
+                    )
+                    .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/buy.png';")
+                    .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                            .addValue(Operation.Buy.getId())
+                            .add("global.eternal_shop_category")
+                            .addValue(goods.getId())
+                    )
+            );
+        }
 
         return components;
     }

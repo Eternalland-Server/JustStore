@@ -34,7 +34,7 @@ public class Commodity {
 
     public String getPriceFormat(Player player) {
         double lastPrice = getPrice() * Utils.getDiscount(player);
-        String s = getPrice() >= 100000 ? UnitConvert.formatCN(UnitConvert.TenThousand, lastPrice) : Utils.formatting(lastPrice);
+        String s = Utils.unitFormatting(lastPrice);
         return charge.getSymbol() + " " + s + " " + charge.getColor() + charge.getCurrency().getDisplay();
     }
 

@@ -44,6 +44,13 @@ public class ShopListener implements Listener {
 
             JustStore.getStoreManager().shopBuying(player, category, goodsID);
         }
+
+        if (operation == Operation.Sell) {
+            int category = e.getParams().getParamI(2);
+            String goodsID =  e.getParams().getParam(3);
+
+            JustStore.getStoreManager().shopSelling(player, category, goodsID, 1);
+        }
     }
 
     private void handleCategory(Player player, int category) {

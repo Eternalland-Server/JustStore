@@ -15,7 +15,7 @@ import java.util.UUID;
 public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+    public void onFirst(AsyncPlayerPreLoginEvent event) {
         if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             return;
         }
@@ -24,7 +24,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPreLoginMonitor(AsyncPlayerPreLoginEvent event) {
+    public void onSecond(AsyncPlayerPreLoginEvent event) {
         if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             JustStore.getUserManager().removeAccount(event.getUniqueId());
         }

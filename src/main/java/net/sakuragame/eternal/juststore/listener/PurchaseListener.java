@@ -27,7 +27,7 @@ public class PurchaseListener implements Listener {
         Player player = e.getPlayer();
         UserPurchaseData account = JustStore.getUserManager().getAccount(player);
 
-        int amount = e.getAmount();
+        int amount = e.getQuantity();
         int current = account.getCount(id);
         if (current + amount <= limit) return;
 
@@ -50,7 +50,7 @@ public class PurchaseListener implements Listener {
         Player player = e.getPlayer();
         UserPurchaseData account = JustStore.getUserManager().getAccount(player);
 
-        int count = account.addRecord(id, e.getAmount());
+        int count = account.addRecord(id, e.getQuantity());
 
         updateButton(player, e.getCommodityID(), count, limit);
     }
