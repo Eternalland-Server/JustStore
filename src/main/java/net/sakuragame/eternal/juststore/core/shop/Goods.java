@@ -43,7 +43,7 @@ public class Goods {
     }
 
     public String getFormatPrice() {
-        String s = getPrice() > 10000 ? UnitConvert.formatCN(UnitConvert.TenThousand, getPrice(), 2) : Utils.formatting(getPrice());
+        String s = Utils.unitFormatting(getPrice());
         return charge.getSymbol() + s + charge.getCurrency().getDisplay();
     }
 
