@@ -34,7 +34,7 @@ public class Utils {
 
     public static String unitFormatting(double value) {
         if (value > 100000) {
-            UnitConvert.formatCN(UnitConvert.TenThousand, value);
+            return UnitConvert.formatCN(UnitConvert.TenThousand, value);
         }
         return formatting(value);
     }
