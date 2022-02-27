@@ -21,7 +21,7 @@ public class Utils {
     public static double getDiscount(Player player) {
         for (String key : ConfigFile.discount.keySet()) {
             double discount = ConfigFile.discount.get(key);
-            if (!player.hasPermission("eternal." + key)) continue;
+            if (!player.hasPermission(key)) continue;
             return discount;
         }
 
