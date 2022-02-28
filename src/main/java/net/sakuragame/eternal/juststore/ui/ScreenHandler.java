@@ -27,7 +27,7 @@ public class ScreenHandler {
     public static LinkedList<BasicComponent> build(Player player, int index, Goods goods) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
-        String y = (index == 1 ? "goods_scrollbar_region.y" : "goods_" + (index - 1) + ".y + 51");
+        String y = (index == 1 ? "goods_scrollbar_sub.y" : "goods_" + (index - 1) + ".y + 51");
         String bodyID = "goods_" + index;
         String frameID = bodyID + "_frame";
         String itemID = bodyID + "_item";
@@ -231,7 +231,7 @@ public class ScreenHandler {
     }
 
     private static String getX(int index) {
-        if (index == 0) return "goods_scrollbar_region.x";
+        if (index == 0) return "goods_scrollbar_sub.x";
 
         int line = index % 5;
         if (line == 0) return "goods_" + (index - 4) + ".x";
@@ -240,7 +240,7 @@ public class ScreenHandler {
     }
 
     private static String getY(int index) {
-        if (index == 0) return "goods_scrollbar_region.y";
+        if (index == 0) return "goods_scrollbar_sub.y";
 
         int line = index % 5;
         if (line == 0) return "goods_" + (index - 4) + ".y + 126 * (w / 960)";

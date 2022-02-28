@@ -1,16 +1,19 @@
 package net.sakuragame.eternal.juststore.ui.comp;
 
+import com.taylorswiftcn.megumi.uifactory.generate.ui.component.BasicComponent;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.custom.ScrollBarComp;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
+import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.shop.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.ui.ScreenHandler;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.Map;
 
 public class CommodityComp extends BaseInventory {
@@ -25,14 +28,24 @@ public class CommodityComp extends BaseInventory {
     public void send(Player player, Map<String, Goods> goodsList) {
         ScreenUI ui = new ScreenUI(shopID);
 
-        int surplus = Math.max(0, goodsList.size() - 4);
-        double thumbRollDistance = surplus == 0 ? 0 : (255.0 / surplus);
+        int size = goodsList.size();
 
-        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", thumbRollDistance, 51);
+        int surplus = Math.max(0, size - 5);
+
+        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", 14, 237.0 / Math.max(1, surplus), 51);
         comp
                 .setTexture("0,0,0,0")
                 .setXY("goods_frame.x", "goods_frame.y + 9")
                 .setCompSize("goods_frame.width", "goods_sub.height");
+
+        BasicComponent thumb = new TextureComp("goods_scrollbar_thumb")
+                .setTexture("ui/store/shop/scrollbar_thumb.png")
+                .setXY("scrollbar_track.x", "scrollbar_track.y + 9")
+                .setCompSize(9, 19);
+
+        if (size > 5) {
+            thumb.setMaxMoveY("scrollbar_track.height - 37");
+        }
 
         comp
                 .setTrack((TextureComp) new TextureComp("scrollbar_track")
@@ -41,12 +54,7 @@ public class CommodityComp extends BaseInventory {
                         .setCompSize(9, 274)
                         .setAlpha(0.7)
                 )
-                .setThumb((TextureComp) new TextureComp("goods_scrollbar_thumb")
-                        .setTexture("ui/store/shop/scrollbar_thumb.png")
-                        .setXY("scrollbar_track.x", "scrollbar_track.y + 9")
-                        .setCompSize(9, 19)
-                        .setMaxMoveY("scrollbar_track.height - 37")
-                );
+                .setThumb((TextureComp) thumb);
 
         int i = 1;
         for (Goods goods : goodsList.values()) {
@@ -57,13 +65,13 @@ public class CommodityComp extends BaseInventory {
 
         yaml = ui.build(player);
 
-        /*try {
-            File file = new File(JustStore.getInstance().getDataFolder(), "commodity.yml");
+        try {
+            File file = new File(JustStore.getInstance().getDataFolder(), "goods.yml");
             yaml.save(file);
         }
         catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         PacketSender.sendYaml(player, FolderType.Gui, shopID, yaml);
     }
@@ -71,14 +79,22 @@ public class CommodityComp extends BaseInventory {
     public void sendStoreGoods(Player player, Map<String, Commodity> commodities) {
         ScreenUI ui = new ScreenUI(storeID);
 
-        int surplus = Math.max(0, (int) Math.ceil(commodities.size() / 5.0 - 2));
-        double thumbRollDistance = surplus == 0 ? 0 : (252.0 / surplus);
+        int line = (int) Math.ceil(commodities.size() / 5.0);
+        int surplus = Math.max(0, line - 2);
 
-        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", thumbRollDistance, 126);
+        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", "12", 216.0 / Math.max(1, surplus) + "*(w/960)", "126.5");
         comp
                 .setTexture("0,0,0,0")
                 .setXY("goods_sub.x", "goods_sub.y")
                 .setCompSize("goods_sub.width", "goods_sub.height");
+
+        BasicComponent thumb = new TextureComp("goods_scrollbar_thumb")
+                .setTexture("ui/store/shop/scrollbar_thumb.png")
+                .setXY("scrollbar_track.x", "scrollbar_track.y + 9*(w/960)")
+                .setCompSize("9*(w/960)", "19*(w/960)");
+        if (line > 2) {
+            thumb.setMaxMoveY("scrollbar_track.height - 37*(w/960)");
+        }
 
         comp
                 .setTrack((TextureComp) new TextureComp("scrollbar_track")
@@ -87,12 +103,7 @@ public class CommodityComp extends BaseInventory {
                         .setWidth("9*(w/960)")
                         .setHeight("253*(w/960)")
                 )
-                .setThumb((TextureComp) new TextureComp("goods_scrollbar_thumb")
-                        .setTexture("ui/store/shop/scrollbar_thumb.png")
-                        .setXY("scrollbar_track.x", "scrollbar_track.y + 9*(w/960)")
-                        .setCompSize("9*(w/960)", "19*(w/960)")
-                        .setMaxMoveY("scrollbar_track.height - 37*(w/960)")
-                );
+                .setThumb((TextureComp) thumb);
 
         int i = 1;
         for (Commodity commodity : commodities.values()) {
@@ -103,13 +114,13 @@ public class CommodityComp extends BaseInventory {
 
         yaml = ui.build(player);
 
-        /*try {
-            File file = new File(JustStore.getInstance().getDataFolder(), "comp.yml");
+        try {
+            File file = new File(JustStore.getInstance().getDataFolder(), "commodity.yml");
             yaml.save(file);
         }
         catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         PacketSender.sendYaml(player, FolderType.Gui, storeID, yaml);
     }
