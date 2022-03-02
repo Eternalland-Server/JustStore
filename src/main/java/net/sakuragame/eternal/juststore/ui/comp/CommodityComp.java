@@ -30,9 +30,9 @@ public class CommodityComp extends BaseInventory {
 
         int size = goodsList.size();
 
-        int surplus = Math.max(0, size - 5);
+        int surplus = Math.max(1, size - 5);
 
-        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", 14, 237.0 / Math.max(1, surplus), 51);
+        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", 14, 237.0 / surplus, 51);
         comp
                 .setTexture("0,0,0,0")
                 .setXY("goods_frame.x", "goods_frame.y + 9")
@@ -65,13 +65,13 @@ public class CommodityComp extends BaseInventory {
 
         yaml = ui.build(player);
 
-        try {
+        /*try {
             File file = new File(JustStore.getInstance().getDataFolder(), "goods.yml");
             yaml.save(file);
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         PacketSender.sendYaml(player, FolderType.Gui, shopID, yaml);
     }
@@ -80,9 +80,9 @@ public class CommodityComp extends BaseInventory {
         ScreenUI ui = new ScreenUI(storeID);
 
         int line = (int) Math.ceil(commodities.size() / 5.0);
-        int surplus = Math.max(0, line - 2);
+        int surplus = Math.max(1, line - 2);
 
-        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", "12", 216.0 / Math.max(1, surplus) + "*(w/960)", "126.5");
+        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", "12", 216.0 / surplus + "*(w/960)", "126.5");
         comp
                 .setTexture("0,0,0,0")
                 .setXY("goods_sub.x", "goods_sub.y")
@@ -114,13 +114,13 @@ public class CommodityComp extends BaseInventory {
 
         yaml = ui.build(player);
 
-        try {
+        /*try {
             File file = new File(JustStore.getInstance().getDataFolder(), "commodity.yml");
             yaml.save(file);
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         PacketSender.sendYaml(player, FolderType.Gui, storeID, yaml);
     }
