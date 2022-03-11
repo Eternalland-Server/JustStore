@@ -142,10 +142,13 @@ public class StoreManager {
 
         Charge charge = goods.getCharge();
         double price = goods.getPrice() * quantity;
-        double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
-        if (balance < price) {
-            MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
-            return;
+
+        if (charge != Charge.NONE) {
+            double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
+            if (balance < price) {
+                MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
+                return;
+            }
         }
 
         if (goods.getConsume().size() != 0) {

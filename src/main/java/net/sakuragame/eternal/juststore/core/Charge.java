@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 @Getter
 public enum Charge {
 
+    NONE(),
     MONEY("money", "§6", EternalCurrency.Money),
     COINS("coins", "§b", EternalCurrency.Coins),
     POINTS("points", "§c", EternalCurrency.Points),
@@ -16,6 +17,12 @@ public enum Charge {
     private final String id;
     private final String color;
     private final EternalCurrency currency;
+
+    Charge() {
+        this.id = null;
+        this.color = null;
+        this.currency = null;
+    }
 
     Charge(String id, String color, EternalCurrency currency) {
         this.id = id;
