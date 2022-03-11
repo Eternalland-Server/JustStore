@@ -32,7 +32,7 @@ public class Goods {
         this.sell = section.getBoolean("sell", false);
         this.amount = section.getInt("amount", 1);
         this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
-        this.price = section.getDouble("price");
+        this.price = section.getDouble("price", 0);
         this.consume = new LinkedHashMap<>();
         for (String key : section.getStringList("consume")) {
             String[] args = key.split(":", 2);
