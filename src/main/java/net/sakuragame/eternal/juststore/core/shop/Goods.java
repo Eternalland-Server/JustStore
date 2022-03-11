@@ -43,6 +43,8 @@ public class Goods {
     }
 
     public String getFormatPrice() {
+        if (charge == Charge.NONE) return "&f不收费";
+
         String s = Utils.unitFormatting(getPrice());
         return charge.getSymbol() + s + charge.getCurrency().getDisplay();
     }
