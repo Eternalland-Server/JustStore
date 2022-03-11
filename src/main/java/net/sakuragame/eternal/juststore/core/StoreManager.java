@@ -41,6 +41,8 @@ public class StoreManager {
     }
 
     public void init() {
+        openMap.clear();
+
         JustStore.getFileManager().loadStore();
         JustStore.getFileManager().loadShops();
         plugin.getLogger().info(String.format("已载入 %s 个商店", shops.size()));
