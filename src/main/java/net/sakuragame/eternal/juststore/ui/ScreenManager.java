@@ -51,10 +51,8 @@ public class ScreenManager {
         CurrencyComp currencyComp = shop.isFish() ? new FishComp() : new EconomyComp();
         currencyComp.send(player);
 
-        if (!StoreManager.isCurrentOpenShop(player, id)) {
-            CategoryComp categoryComp = new CategoryComp();
-            categoryComp.send(player, shop);
-        }
+        CategoryComp categoryComp = new CategoryComp();
+        categoryComp.send(player, shop);
 
         CommodityComp comp = new CommodityComp();
         comp.send(player, shelf.getGoods());
