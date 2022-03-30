@@ -7,28 +7,28 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
-import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.shop.Goods;
+import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.ui.ScreenHandler;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.Map;
 
 public class CommodityComp extends BaseInventory {
 
-    public final static String shopID = "eternal_shop_shelf";
-    public final static String storeID = "eternal_store_shelf";
+    public final static String SHOP_SHELF_ID = "eternal_shop_shelf";
+    public final static String STORE_SHELF_ID = "eternal_store_shelf";
 
     public CommodityComp() {
-        super(shopID);
+        super(SHOP_SHELF_ID);
     }
 
-    public void send(Player player, Map<String, Goods> goodsList) {
-        ScreenUI ui = new ScreenUI(shopID);
+    public void sendShop(Player player, String shopID, GoodsShelf shelf) {
+        ScreenUI ui = new ScreenUI(SHOP_SHELF_ID);
 
-        int size = goodsList.size();
+        Map<String, Goods> goodsMap = shelf.getGoods();
+        int size = goodsMap.size();
 
         int surplus = Math.max(1, size - 5);
 
@@ -57,8 +57,8 @@ public class CommodityComp extends BaseInventory {
                 .setThumb((TextureComp) thumb);
 
         int i = 1;
-        for (Goods goods : goodsList.values()) {
-            comp.addContent(ScreenHandler.build(player, i, goods));
+        for (Goods goods : goodsMap.values()) {
+            comp.addContent(ScreenHandler.build(player, shopID, i, goods));
             i++;
         }
         ui.addComponent(comp);
@@ -73,11 +73,11 @@ public class CommodityComp extends BaseInventory {
             e.printStackTrace();
         }*/
 
-        PacketSender.sendYaml(player, FolderType.Gui, shopID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, SHOP_SHELF_ID, yaml);
     }
 
-    public void sendStoreGoods(Player player, Map<String, Commodity> commodities) {
-        ScreenUI ui = new ScreenUI(storeID);
+    public void sendStore(Player player, Map<String, Commodity> commodities) {
+        ScreenUI ui = new ScreenUI(STORE_SHELF_ID);
 
         int line = (int) Math.ceil(commodities.size() / 5.0);
         int surplus = Math.max(1, line - 2);
@@ -122,6 +122,6 @@ public class CommodityComp extends BaseInventory {
             e.printStackTrace();
         }*/
 
-        PacketSender.sendYaml(player, FolderType.Gui, storeID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, STORE_SHELF_ID, yaml);
     }
 }

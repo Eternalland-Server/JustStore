@@ -2,20 +2,17 @@ package net.sakuragame.eternal.juststore.core;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
-import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.*;
-import net.sakuragame.eternal.juststore.core.shop.Goods;
-import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
-import net.sakuragame.eternal.juststore.core.shop.Shop;
-import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
+import net.sakuragame.eternal.juststore.core.order.ShopOrder;
+import net.sakuragame.eternal.juststore.core.shop.*;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Store;
-import net.sakuragame.eternal.juststore.core.store.StoreOrder;
+import net.sakuragame.eternal.juststore.core.order.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
-import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -108,114 +105,6 @@ public class StoreManager {
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
     }
 
-    public void shopBuying(Player player, int category, String goodsID) {
-        shopBuying(player, category, goodsID, null);
-    }
-
-    public void shopBuying(Player player, int categoryID, String goodsID, Integer quantity) {
-        UUID uuid = player.getUniqueId();
-        String currentShop = getOpenShop(uuid);
-        if (currentShop == null) {
-            player.closeInventory();
-            return;
-        }
-
-        Shop shop = getShop(currentShop);
-        Goods goods = getGoods(shop, categoryID, goodsID);
-        if (goods == null) {
-            player.closeInventory();
-            return;
-        }
-
-        String category = shop.getGoodsShelf(categoryID).getId();
-
-        if (!goods.isSingle() && quantity == null) {
-            QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
-            box.open(player, true);
-            addShopOrder(player.getUniqueId(), new ShopOrder(currentShop, categoryID, goods.getId()));
-            return;
-        }
-
-        quantity = quantity == null ? 1 : quantity;
-
-        ShopPurchaseEvent preEvent = new ShopPurchaseEvent(player, currentShop, category, goodsID, quantity);
-        preEvent.call();
-        if (preEvent.isCancelled()) return;
-
-        Charge charge = goods.getCharge();
-        double price = goods.getPrice() * quantity;
-
-        if (charge != Charge.NONE) {
-            double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
-            if (balance < price) {
-                MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
-                return;
-            }
-        }
-
-        if (goods.getConsume().size() != 0) {
-            if (!Utils.checkItem(player, goods.getConsume(quantity))) {
-                MessageAPI.sendActionTip(player, "&c&l购买失败，背包内材料不足");
-                return;
-            }
-
-            Utils.consumeItem(player, goods.getConsume(quantity));
-        }
-
-        ItemStack boughtGoods = ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), player);
-        if (boughtGoods == null) {
-            player.sendMessage(" §c§l购买失败，请联系管理员");
-            return;
-        }
-        charge.withdraw(player, price);
-
-        boughtGoods.setAmount(quantity * goods.getAmount());
-        player.getInventory().addItem(boughtGoods);
-
-        ShopPurchasedEvent postEvent = new ShopPurchasedEvent(player, currentShop, category, goodsID, quantity);
-        postEvent.call();
-
-        MessageAPI.sendActionTip(player, "&a&l购买成功！");
-        player.sendMessage(ConfigFile.prefix + "你购买了 " + goods.getName());
-    }
-
-    public void shopSelling(Player player, int categoryID, String goodsID, int quantity) {
-        UUID uuid = player.getUniqueId();
-        String currentShop = getOpenShop(uuid);
-        if (currentShop == null) {
-            player.closeInventory();
-            return;
-        }
-
-        Shop shop = getShop(currentShop);
-        Goods goods = getGoods(shop, categoryID, goodsID);
-        if (goods == null) {
-            player.closeInventory();
-            return;
-        }
-
-        String category = shop.getGoodsShelf(categoryID).getId();
-
-        ShopSellEvent sellEvent = new ShopSellEvent(player, currentShop, category, goodsID, quantity);
-        sellEvent.call();
-        if (sellEvent.isCancelled()) return;
-
-        Charge charge = goods.getCharge();
-        double price = goods.getPrice() * quantity;
-
-        Map<String, Integer> sellItem = new HashMap<String, Integer>() {{ put(goods.getItem(), goods.getAmount()); }};
-        if (!Utils.checkItem(player, new HashMap<>(sellItem))) {
-            MessageAPI.sendActionTip(player, "&c&l出售失败，你背包内没有足够的 " + goods.getName());
-            return;
-        }
-
-        EternalCurrency currency = charge.getCurrency();
-        Utils.consumeItem(player, sellItem);
-        GemsEconomyAPI.deposit(uuid, price, charge.getCurrency());
-        MessageAPI.sendActionTip(player, "&a&l出售成功！");
-        player.sendMessage(ConfigFile.prefix + "§7你出售了 " + goods.getName() + " §7获得了 §f" + Utils.unitFormatting(price) + " §7" + currency.getDisplay());
-    }
-
     public Store getStore(StoreType type) {
         return stores.get(type);
     }
@@ -246,12 +135,6 @@ public class StoreManager {
 
     public void registerShop(String id, YamlConfiguration yaml) {
         shops.put(id, new Shop(id, yaml));
-    }
-
-    public static boolean isCurrentOpenShop(Player player, String id) {
-        UUID uuid = player.getUniqueId();
-        if (!openMap.containsKey(uuid)) return false;
-        return openMap.get(uuid).equals(id);
     }
 
     public static String getOpenShop(UUID uuid) {

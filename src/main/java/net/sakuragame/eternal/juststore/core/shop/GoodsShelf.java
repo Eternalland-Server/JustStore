@@ -1,6 +1,7 @@
 package net.sakuragame.eternal.juststore.core.shop;
 
 import lombok.Getter;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
@@ -24,9 +25,15 @@ public class GoodsShelf {
 
         for (String key : section.getKeys(false)) {
             ConfigurationSection sub = section.getConfigurationSection(key);
-            map.put(key, new Goods(key, sub));
+            TradeType type = TradeType.valueOf(sub.getString("type", "BUY").toUpperCase());
+
+            map.put(key, Goods.newInstance(key, type, sub));
         }
 
         return map;
+    }
+
+    public Goods getGoods(String id) {
+        return goods.get(id);
     }
 }

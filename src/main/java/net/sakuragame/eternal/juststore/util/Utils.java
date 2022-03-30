@@ -4,6 +4,9 @@ import com.taylorswiftcn.justwei.util.MegumiUtil;
 import com.taylorswiftcn.justwei.util.UnitConvert;
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import ink.ptms.zaphkiel.api.Item;
+import ink.ptms.zaphkiel.api.ItemStream;
+import ink.ptms.zaphkiel.taboolib.module.nms.ItemTagData;
+import net.sakuragame.eternal.dragoncore.util.Pair;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -93,6 +96,24 @@ public class Utils {
 
             if (consume.size() == 0) return;
         }
+    }
+
+    public static Pair<ItemTagData, ItemTagData> getFirstEquipPotency(Player player, String equipID) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (MegumiUtil.isEmpty(item)) continue;
+
+            ItemStream itemStream = ZaphkielAPI.INSTANCE.read(item);
+            if (!itemStream.getZaphkielItem().getId().equals(equipID)) continue;
+
+            ItemTagData grade = itemStream.getZaphkielData().getDeep("justattribute.grade");
+            ItemTagData potency = itemStream.getZaphkielData().getDeep("justattribute.potency");
+
+            if (grade == null) return null;
+
+            return new Pair<>(grade, potency);
+        }
+
+        return null;
     }
 
     public static long getNextDayTime() {

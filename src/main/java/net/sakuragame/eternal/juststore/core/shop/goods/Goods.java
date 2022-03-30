@@ -1,35 +1,33 @@
-package net.sakuragame.eternal.juststore.core.shop;
+package net.sakuragame.eternal.juststore.core.shop.goods;
 
 import com.taylorswiftcn.justwei.util.MegumiUtil;
-import com.taylorswiftcn.justwei.util.UnitConvert;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.core.Charge;
+import net.sakuragame.eternal.juststore.core.shop.TradeType;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
 
 @Getter
-@AllArgsConstructor
-public class Goods {
+public abstract class Goods implements GoodsImpl {
 
     private final String id;
+    private final TradeType type;
     private final String item;
     private final String name;
-    private final boolean single;
-    private final boolean sell;
+    private boolean single;
     private final int amount;
     private final Charge charge;
     private final Double price;
     private final LinkedHashMap<String, Integer> consume;
 
-    public Goods(String id, ConfigurationSection section) {
+    public Goods(String id, TradeType type, ConfigurationSection section) {
         this.id = id;
+        this.type = type;
         this.item = section.getString("item");
         this.name = MegumiUtil.onReplace(section.getString("name"));
         this.single = section.getBoolean("single");
-        this.sell = section.getBoolean("sell", false);
         this.amount = section.getInt("amount", 1);
         this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price", 0);
@@ -40,6 +38,16 @@ public class Goods {
             int amount = Integer.parseInt(args[1]);
             consume.put(consumeID, amount);
         }
+    }
+
+    public void setSingle(boolean single) {
+        this.single = single;
+    }
+
+    public static Goods newInstance(String id, TradeType type, ConfigurationSection section) {
+        if (type == TradeType.BUY) return new BuyGoods(id, type, section);
+        if (type == TradeType.SELL) return new SellGoods(id, type, section);
+        return new UpgradeGoods(id, type, section);
     }
 
     public String getFormatPrice() {

@@ -8,7 +8,7 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmE
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.StoreManager;
-import net.sakuragame.eternal.juststore.core.store.StoreOrder;
+import net.sakuragame.eternal.juststore.core.order.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
@@ -67,7 +67,7 @@ public class StoreListener implements Listener {
             return;
         }
 
-        if (operation == Operation.Buy) {
+        if (operation == Operation.Trade) {
             int category = e.getParams().getParamI(2);
             String commodityID = e.getParams().getParam(3);
 

@@ -12,7 +12,8 @@ import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.UserPurchaseData;
-import net.sakuragame.eternal.juststore.core.shop.Goods;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
+import net.sakuragame.eternal.juststore.core.shop.TradeType;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Tag;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
@@ -25,7 +26,7 @@ public class ScreenHandler {
 
     private static final JustStore plugin = JustStore.getInstance();
 
-    public static LinkedList<BasicComponent> build(Player player, int index, Goods goods) {
+    public static LinkedList<BasicComponent> build(Player player, String shopID, int index, Goods goods) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
         String y = (index == 1 ? ScrollBarComp.EXTEND_ID + ".y" : "goods_" + (index - 1) + ".y + 51");
@@ -71,7 +72,8 @@ public class ScreenHandler {
         }
         PacketSender.putClientSlotItem(player, goods.getGoodsSlot(), item);
 
-        if (!goods.isSell()) {
+        TradeType type = goods.getType();
+        if (type != TradeType.SELL) {
             Map<String, Integer> consume = goods.getConsume();
             List<String> keys = new ArrayList<>(consume.keySet());
             if (keys.size() != 0) {
@@ -114,42 +116,23 @@ public class ScreenHandler {
             }
         }
 
-        if (goods.isSell()) {
-            components.add(new TextureComp(operateID)
-                    .setTexture("ui/store/button/sell.png")
-                    .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
-                    .setCompSize(40, 16)
-                    .addAction(ActionType.Left_Click, new Statements()
-                            .add("func.Sound_Play();")
-                            .add(operateID + ".texture = 'ui/store/button/sell_press.png';")
-                            .build()
-                    )
-                    .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/sell.png';")
-                    .addAction(ActionType.Left_Release, new SubmitParams(plugin)
-                            .addValue(Operation.Sell.getId())
-                            .add("global.eternal_shop_category")
-                            .addValue(goods.getId())
-                    )
-            );
-        }
-        else {
-            components.add(new TextureComp(operateID)
-                    .setTexture("ui/store/button/buy.png")
-                    .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
-                    .setCompSize(40, 16)
-                    .addAction(ActionType.Left_Click, new Statements()
-                            .add("func.Sound_Play();")
-                            .add(operateID + ".texture = 'ui/store/button/buy_press.png';")
-                            .build()
-                    )
-                    .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/buy.png';")
-                    .addAction(ActionType.Left_Release, new SubmitParams(plugin)
-                            .addValue(Operation.Buy.getId())
-                            .add("global.eternal_shop_category")
-                            .addValue(goods.getId())
-                    )
-            );
-        }
+        components.add(new TextureComp(operateID)
+                .setTexture("ui/store/button/" + type.getA())
+                .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
+                .setCompSize(40, 16)
+                .addAction(ActionType.Left_Click, new Statements()
+                        .add("func.Sound_Play();")
+                        .add(operateID + ".texture = 'ui/store/button/" + type.getB() + "';")
+                        .build()
+                )
+                .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/" + type.getA() + "';")
+                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                        .addValue(Operation.Trade.getId())
+                        .addValue(shopID)
+                        .add("global.eternal_shop_category")
+                        .addValue(goods.getId())
+                )
+        );
 
         return components;
     }
@@ -208,7 +191,7 @@ public class ScreenHandler {
                 )
                 .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/common/button_normal_a.png';")
                 .addAction(ActionType.Left_Release, new SubmitParams(plugin)
-                        .addValue(Operation.Buy.getId())
+                        .addValue(Operation.Trade.getId())
                         .add("global.eternal_store_category")
                         .addValue(commodity.getId())
                 )

@@ -1,12 +1,18 @@
 package net.sakuragame.eternal.juststore.listener;
 
 import com.taylorswiftcn.megumi.uifactory.event.comp.UIFCompSubmitEvent;
+import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEvent;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.api.event.ShopTradeEvent;
+import net.sakuragame.eternal.juststore.api.event.ShopTradedEvent;
 import net.sakuragame.eternal.juststore.core.StoreManager;
-import net.sakuragame.eternal.juststore.core.shop.ShopOrder;
+import net.sakuragame.eternal.juststore.core.order.ShopOrder;
+import net.sakuragame.eternal.juststore.core.shop.Shop;
+import net.sakuragame.eternal.juststore.core.shop.goods.BuyGoods;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import net.sakuragame.eternal.juststore.ui.screen.ShopScreen;
@@ -38,18 +44,26 @@ public class ShopListener implements Listener {
             return;
         }
 
-        if (operation == Operation.Buy) {
-            int category = e.getParams().getParamI(2);
-            String goodsID = e.getParams().getParam(3);
+        if (operation == Operation.Trade) {
+            String shopID = e.getParams().getParam(2);
+            int category = e.getParams().getParamI(3);
+            String goodsID = e.getParams().getParam(4);
 
-            JustStore.getStoreManager().shopBuying(player, category, goodsID);
-        }
+            Shop shop = JustStore.getStoreManager().getShop(shopID);
+            if (shop == null) return;
 
-        if (operation == Operation.Sell) {
-            int category = e.getParams().getParamI(2);
-            String goodsID =  e.getParams().getParam(3);
+            Goods goods = shop.getGoods(category, goodsID);
 
-            JustStore.getStoreManager().shopSelling(player, category, goodsID, 1);
+            if (goods instanceof BuyGoods) {
+                if (!goods.isSingle()) {
+                    QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
+                    box.open(player, true);
+                    StoreManager.addShopOrder(player.getUniqueId(), new ShopOrder(shopID, category, goodsID));
+                    return;
+                }
+            }
+
+            this.trade(player, shopID, category, goods, 1);
         }
     }
 
@@ -75,9 +89,13 @@ public class ShopListener implements Listener {
         ShopOrder order = StoreManager.getShopOrder(uuid);
         if (order == null) return;
 
+        Shop shop = JustStore.getStoreManager().getShop(order.getShopID());
+        if (shop == null) return;
+
+        Goods goods = shop.getGoods(order.getCategory(), order.getGoodsID());
         int count = e.getCount();
 
-        JustStore.getStoreManager().shopBuying(player, order.getCategory(), order.getGoodsID(), count);
+        this.trade(player, order.getShopID(), order.getCategory(), goods, count);
         QuantityScreen.hide(player);
     }
 
@@ -91,5 +109,16 @@ public class ShopListener implements Listener {
         e.setCancelled(true);
         StoreManager.delShopOrder(player.getUniqueId());
         QuantityScreen.hide(player);
+    }
+
+    private void trade(Player player, String shopID, int categoryID, Goods goods, int quantity) {
+        ShopTradeEvent tradeEvent = new ShopTradeEvent(player, shopID, categoryID, goods, quantity);
+        tradeEvent.call();
+        if (tradeEvent.isCancelled()) return;
+
+        goods.trade(player, quantity);
+
+        ShopTradedEvent tradedEvent = new ShopTradedEvent(player, shopID, categoryID, goods, quantity);
+        tradedEvent.call();
     }
 }

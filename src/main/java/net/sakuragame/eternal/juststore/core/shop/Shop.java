@@ -2,6 +2,7 @@ package net.sakuragame.eternal.juststore.core.shop;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -34,6 +35,13 @@ public class Shop {
             ConfigurationSection section = yaml.getConfigurationSection(key + ".list");
             goodsShelf.put(goodsShelf.size(), new GoodsShelf(key, name, section));
         }
+    }
+
+    public Goods getGoods(int categoryID, String goodsID) {
+        GoodsShelf shelf = this.getGoodsShelf(categoryID);
+        if (shelf == null) return null;
+
+        return shelf.getGoods(goodsID);
     }
 
     public GoodsShelf getGoodsShelf(int id) {

@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum Operation {
 
     Category(0),
-    Buy(1),
-    Sell(2),
+    Trade(1),
     ShopOrder(11),
     StoreOrder(12);
 

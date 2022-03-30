@@ -34,7 +34,7 @@ public class ShopScreen extends BaseInventory {
                 .addImports(
                         Arrays.asList(
                                 CurrencyComp.screenID,
-                                CommodityComp.shopID,
+                                CommodityComp.SHOP_SHELF_ID,
                                 CategoryComp.screenID,
                                 ScreenManager.getQuantityID()
                         )

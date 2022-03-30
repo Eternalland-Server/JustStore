@@ -32,7 +32,7 @@ public class StoreScreen extends BaseInventory {
                         Arrays.asList(
                                 BalanceComp.screenID,
                                 InventoryComp.screenID,
-                                CommodityComp.storeID,
+                                CommodityComp.STORE_SHELF_ID,
                                 bannerID,
                                 ScreenManager.getQuantityID()
                         )

@@ -22,7 +22,6 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class ScreenManager {
 
@@ -55,7 +54,7 @@ public class ScreenManager {
         categoryComp.send(player, shop);
 
         CommodityComp comp = new CommodityComp();
-        comp.send(player, shelf.getGoods());
+        comp.sendShop(player, id, shelf);
 
         Map<String, String> map = new HashMap<>();
         map.put("eternal_shop_name", shop.getName());
@@ -72,7 +71,7 @@ public class ScreenManager {
         if (store == null) return;
 
         CommodityComp comp = new CommodityComp();
-        comp.sendStoreGoods(player, store.getCommodities());
+        comp.sendStore(player, store.getCommodities());
 
         PacketSender.sendSyncPlaceholder(player,
                 new HashMap<String, String>() {{

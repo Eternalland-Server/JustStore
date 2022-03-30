@@ -1,4 +1,4 @@
-package net.sakuragame.eternal.juststore.core.shop;
+package net.sakuragame.eternal.juststore.core.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
