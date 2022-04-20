@@ -51,7 +51,7 @@ public class FileManager extends JustConfiguration {
     }
 
     private void initStore() {
-        File file = new File(plugin.getDataFolder(), "mall");
+        File file = new File(plugin.getDataFolder(), "mail");
         if (!file.mkdirs()) return;
 
         File store = new File(file, "store/prop.yml");
@@ -65,7 +65,7 @@ public class FileManager extends JustConfiguration {
         }
 
         for (StoreType type : StoreType.values()) {
-            File sub = new File(file, type.getFile());
+            File sub = new File(file, "store/" + type.getFile());
             if (type.getFile().equals("prop.yml")) continue;
 
             try {
