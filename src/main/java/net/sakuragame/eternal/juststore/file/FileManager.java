@@ -54,11 +54,11 @@ public class FileManager extends JustConfiguration {
         File file = new File(plugin.getDataFolder(), "mall");
         if (!file.mkdirs()) return;
 
-        File store = new File(file, "store/example.yml");
-        File commodity = new File(file, "commodity/example.yml");
+        File store = new File(file, "store/prop.yml");
+        File commodity = new File(file, "commodity/prop.yml");
 
         if (store.getParentFile().mkdirs()) {
-            MegumiUtil.copyFile(plugin.getResource("prop.yml"), store);
+            MegumiUtil.copyFile(plugin.getResource("store.yml"), store);
         }
         if (commodity.getParentFile().mkdirs()) {
             MegumiUtil.copyFile(plugin.getResource("commodity.yml"), commodity);
