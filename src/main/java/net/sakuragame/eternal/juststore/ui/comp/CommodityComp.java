@@ -7,28 +7,30 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.ui.BaseInventory;
-import net.sakuragame.eternal.juststore.core.shop.GoodsShelf;
-import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
+import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.core.merchant.Goods;
+import net.sakuragame.eternal.juststore.core.merchant.Shelf;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
-import net.sakuragame.eternal.juststore.ui.ScreenHandler;
+import net.sakuragame.eternal.juststore.ui.LayoutHandler;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 
 public class CommodityComp extends BaseInventory {
 
-    public final static String SHOP_SHELF_ID = "eternal_shop_shelf";
+    public final static String Merchant_SHELF_ID = "eternal_shop_shelf";
     public final static String STORE_SHELF_ID = "eternal_store_shelf";
 
     public CommodityComp() {
-        super(SHOP_SHELF_ID);
+        super(Merchant_SHELF_ID);
     }
 
-    public void sendShop(Player player, String shopID, GoodsShelf shelf) {
-        ScreenUI ui = new ScreenUI(SHOP_SHELF_ID);
+    public void sendMerchant(Player player, Shelf shelf) {
+        ScreenUI ui = new ScreenUI(Merchant_SHELF_ID);
 
-        Map<String, Goods> goodsMap = shelf.getGoods();
-        int size = goodsMap.size();
+        List<String> goodsList = shelf.getGoods();
+        int size = goodsList.size();
 
         int surplus = Math.max(1, size - 5);
 
@@ -56,24 +58,17 @@ public class CommodityComp extends BaseInventory {
                 )
                 .setThumb((TextureComp) thumb);
 
-        int i = 1;
-        for (Goods goods : goodsMap.values()) {
-            comp.addContent(ScreenHandler.build(player, shopID, i, goods));
-            i++;
+        for (int i = 0; i < size; i++) {
+            Goods goods = JustStore.getMerchantManger().getGoods(goodsList.get(i));
+            if (goods == null) continue;
+            comp.addContent(LayoutHandler.build(player, i, goods));
         }
+
         ui.addComponent(comp);
 
         yaml = ui.build(player);
 
-        /*try {
-            File file = new File(JustStore.getInstance().getDataFolder(), "goods.yml");
-            yaml.save(file);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-        PacketSender.sendYaml(player, FolderType.Gui, SHOP_SHELF_ID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, Merchant_SHELF_ID, yaml);
     }
 
     public void sendStore(Player player, Map<String, Commodity> commodities) {
@@ -107,20 +102,12 @@ public class CommodityComp extends BaseInventory {
 
         int i = 1;
         for (Commodity commodity : commodities.values()) {
-            comp.addContent(ScreenHandler.build(player, i, commodity));
+            comp.addContent(LayoutHandler.build(player, i, commodity));
             i++;
         }
         ui.addComponent(comp);
 
         yaml = ui.build(player);
-
-        /*try {
-            File file = new File(JustStore.getInstance().getDataFolder(), "commodity.yml");
-            yaml.save(file);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         PacketSender.sendYaml(player, FolderType.Gui, STORE_SHELF_ID, yaml);
     }

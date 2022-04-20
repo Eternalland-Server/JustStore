@@ -1,4 +1,4 @@
-package net.sakuragame.eternal.juststore.ui.screen;
+package net.sakuragame.eternal.juststore.ui.view;
 
 import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
 import com.taylorswiftcn.megumi.uifactory.generate.type.ActionType;
@@ -15,13 +15,13 @@ import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 
 import java.util.Arrays;
 
-public class StoreScreen extends BaseInventory {
+public class StoreUI extends BaseInventory {
 
     private static final JustStore plugin = JustStore.getInstance();
     public final static String screenID = "eternal_store";
     public final static String bannerID = "banner";
 
-    public StoreScreen() {
+    public StoreUI() {
         super(screenID);
         this.init();
     }

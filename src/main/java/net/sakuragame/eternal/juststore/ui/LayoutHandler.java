@@ -12,8 +12,8 @@ import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.UserPurchaseData;
-import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
-import net.sakuragame.eternal.juststore.core.shop.TradeType;
+import net.sakuragame.eternal.juststore.core.merchant.Goods;
+import net.sakuragame.eternal.juststore.core.merchant.TradeType;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Tag;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
@@ -22,22 +22,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ScreenHandler {
+public class LayoutHandler {
 
     private static final JustStore plugin = JustStore.getInstance();
 
-    public static LinkedList<BasicComponent> build(Player player, String shopID, int index, Goods goods) {
+    public static LinkedList<BasicComponent> build(Player player, int index, Goods goods) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
-        String y = (index == 1 ? ScrollBarComp.EXTEND_ID + ".y" : "goods_" + (index - 1) + ".y + 51");
-        String bodyID = "goods_" + index;
-        String frameID = bodyID + "_frame";
-        String itemID = bodyID + "_item";
-        String nameID = bodyID + "_name";
-        String priceID = bodyID + "_price";
-        String requireID = bodyID + "_require";
-        String consumeID = bodyID + "_consume";
-        String operateID = bodyID + "_operate";
+        String y = (index == 0 ? ScrollBarComp.EXTEND_ID + ".y" : "g_" + (index - 1) + ".y + 51");
+        String bodyID = "g_" + index;
+        String frameID = bodyID + "_f";
+        String itemID = bodyID + "_i";
+        String nameID = bodyID + "_n";
+        String priceID = bodyID + "_p";
+        String requireID = bodyID + "_r";
+        String consumeID = bodyID + "_c";
+        String operateID = bodyID + "_o";
 
         components.add(new TextureComp(bodyID)
                 .setTexture("ui/store/shop/goods_bg.png")
@@ -58,7 +58,7 @@ public class ScreenHandler {
                 .setX(frameID + ".x + 46")
                 .setY(frameID + ".y + 2")
         );
-        components.add(new LabelComp(priceID, goods.getFormatPrice())
+        components.add(new LabelComp(priceID, goods.formatPrice())
                 .setX(bodyID + ".x + (" + bodyID + ".width - " + priceID + ".width) -6")
                 .setY(nameID + ".y")
         );
@@ -86,14 +86,14 @@ public class ScreenHandler {
                     ItemStack consumeItem = ZaphkielAPI.INSTANCE.getItemStack(key, null);
                     int amount = consume.get(key);
                     do {
-                        String id = "goods_" + index + "_slot_bg_" + i;
+                        String id = "g_" + index + "_sbg_" + i;
                         components.add(new TextureComp(id)
                                 .setTexture("ui/pack/slot_bg.png")
                                 .setX(consumeID + ".x + 19*" + i)
                                 .setY(consumeID + ".y")
                                 .setCompSize(16, 16)
                         );
-                        components.add(new SlotComp("goods_" + index + "_consume_" + i, goods.getConsumeSlot(i))
+                        components.add(new SlotComp("g_" + index + "_c_" + i, goods.getConsumeSlot(index, i))
                                 .setDrawBackground(false)
                                 .setXY(id + ".x + 2", id + ".y + 2")
                                 .setScale(0.75)
@@ -108,7 +108,7 @@ public class ScreenHandler {
                                 consumeItem.setAmount(amount);
                                 amount = 0;
                             }
-                            PacketSender.putClientSlotItem(player, goods.getConsumeSlot(i), consumeItem);
+                            PacketSender.putClientSlotItem(player, goods.getConsumeSlot(index, i), consumeItem);
                         }
                         i++;
                     } while (amount != 0);
@@ -117,20 +117,18 @@ public class ScreenHandler {
         }
 
         components.add(new TextureComp(operateID)
-                .setTexture("ui/store/button/" + type.getA())
+                .setTexture("ui/store/button/" + type.getNormal())
                 .setXY(bodyID + ".x + 158", bodyID + ".y + 30")
                 .setCompSize(40, 16)
                 .addAction(ActionType.Left_Click, new Statements()
                         .add("func.Sound_Play();")
-                        .add(operateID + ".texture = 'ui/store/button/" + type.getB() + "';")
+                        .add(operateID + ".texture = 'ui/store/button/" + type.getPress() + "';")
                         .build()
                 )
-                .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/" + type.getA() + "';")
-                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                .addAction(ActionType.Left_Release, operateID + ".texture = 'ui/store/button/" + type.getNormal() + "';")
+                .addAction(ActionType.Left_Release, new SubmitParams()
                         .addValue(Operation.Trade.getId())
-                        .addValue(shopID)
-                        .add("global.eternal_shop_category")
-                        .addValue(goods.getId())
+                        .addValue(goods.getID())
                 )
         );
 
@@ -140,12 +138,12 @@ public class ScreenHandler {
     public static LinkedList<BasicComponent> build(Player player, int index, Commodity commodity) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 
-        String bodyID = "goods_" + index;
-        String nameID = bodyID + "_name";
-        String priceID = bodyID + "+price";
-        String itemID = bodyID + "_item";
-        String tagID = bodyID + "_tag";
-        String buyID = commodity.getId() + "_buy";
+        String bodyID = "g_" + index;
+        String nameID = bodyID + "_n";
+        String priceID = bodyID + "_p";
+        String itemID = bodyID + "_i";
+        String tagID = bodyID + "_t";
+        String buyID = commodity.getId() + "_b";
 
         String x = getX(index - 1);
         String y = getY(index - 1);
@@ -218,17 +216,17 @@ public class ScreenHandler {
         if (index == 0) return ScrollBarComp.EXTEND_ID + ".x";
 
         int line = index % 5;
-        if (line == 0) return "goods_" + (index - 4) + ".x";
+        if (line == 0) return "g_" + (index - 4) + ".x";
 
-        return "goods_" + index + ".x + 86 * (w / 960)";
+        return "g_" + index + ".x + 86 * (w / 960)";
     }
 
     private static String getY(int index) {
         if (index == 0) return ScrollBarComp.EXTEND_ID + ".y";
 
         int line = index % 5;
-        if (line == 0) return "goods_" + (index - 4) + ".y + 126 * (w / 960)";
+        if (line == 0) return "g_" + (index - 4) + ".y + 126 * (w / 960)";
 
-        return "goods_" + index + ".y";
+        return "g_" + index + ".y";
     }
 }

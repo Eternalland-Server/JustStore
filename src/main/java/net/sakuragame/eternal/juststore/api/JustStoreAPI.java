@@ -5,11 +5,11 @@ import org.bukkit.entity.Player;
 
 public class JustStoreAPI {
 
-    public static void openShop(Player player, String shopID) {
-        openShop(player, shopID, 0);
+    public static void openMerchant(Player player, String shopID) {
+        openMerchant(player, shopID, null);
     }
 
-    public static void openShop(Player player, String shopID, int category) {
-        ScreenManager.openShop(player, shopID, category);
+    public static void openMerchant(Player player, String shopID, String shelfID) {
+        ScreenManager.openMerchant(player, shopID, shelfID);
     }
 }

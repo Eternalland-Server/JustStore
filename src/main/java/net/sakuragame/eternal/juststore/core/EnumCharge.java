@@ -6,7 +6,7 @@ import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
 import org.bukkit.entity.Player;
 
 @Getter
-public enum Charge {
+public enum EnumCharge {
 
     NONE(),
     MONEY("money", "§6", EternalCurrency.Money),
@@ -18,13 +18,13 @@ public enum Charge {
     private final String color;
     private final EternalCurrency currency;
 
-    Charge() {
+    EnumCharge() {
         this.id = null;
         this.color = null;
         this.currency = null;
     }
 
-    Charge(String id, String color, EternalCurrency currency) {
+    EnumCharge(String id, String color, EternalCurrency currency) {
         this.id = id;
         this.color = color;
         this.currency = currency;

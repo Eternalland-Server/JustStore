@@ -2,6 +2,7 @@ package net.sakuragame.eternal.juststore.commands.sub;
 
 import com.taylorswiftcn.justwei.commands.sub.SubCommand;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.api.JustStoreAPI;
 import net.sakuragame.eternal.juststore.commands.CommandPerms;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
@@ -28,12 +29,12 @@ public class OpenCommand extends SubCommand {
             return;
         }
 
-        if (!JustStore.getStoreManager().getShopsKey().contains(s2)) {
+        if (!JustStore.getMerchantManger().getMerchantIDs().contains(s2)) {
             sender.sendMessage(ConfigFile.prefix + "没有该商店");
             return;
         }
 
-        ScreenManager.openShop(player, s2);
+        JustStoreAPI.openMerchant(player, s2);
         sender.sendMessage(ConfigFile.prefix + "已为该玩家打开商店");
     }
 

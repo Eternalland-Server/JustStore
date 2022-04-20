@@ -32,26 +32,31 @@ public class FileManager extends JustConfiguration {
         ConfigFile.init();
         MessageFile.init();
 
-        initShops();
+        initMerchant();
         initStore();
     }
 
-    private void initShops() {
-        File file = new File(plugin.getDataFolder(), "shops");
-        if (file.exists()) return;
+    private void initMerchant() {
+        File file = new File(plugin.getDataFolder(), "merchant");
+        if (!file.mkdirs()) return;
 
-        File template = new File(file, "shop.yml");
-        template.getParentFile().mkdirs();
-        MegumiUtil.copyFile(plugin.getResource("shop.yml"), template);
+        File shop = new File(file, "shop/example.yml");
+        File goods = new File(file, "goods/example.yml");
+
+        if (shop.getParentFile().mkdirs()) {
+            MegumiUtil.copyFile(plugin.getResource("shop.yml"), shop);
+        }
+        if (goods.getParentFile().mkdirs()) {
+            MegumiUtil.copyFile(plugin.getResource("goods.yml"), goods);
+        }
     }
 
     private void initStore() {
         File file = new File(plugin.getDataFolder(), "stores");
-        if (file.exists()) return;
+        if (!file.exists()) return;
 
         for (StoreType type : StoreType.values()) {
             File sub = new File(file, type.getFile());
-            sub.getParentFile().mkdirs();
             if (type.getFile().equals("prop.yml")) {
                 MegumiUtil.copyFile(plugin.getResource("store.yml"), sub);
                 continue;
@@ -64,19 +69,6 @@ public class FileManager extends JustConfiguration {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void loadShops() {
-        File file = new File(plugin.getDataFolder(), "shops");
-
-        File[] child = file.listFiles();
-        if (child == null || child.length == 0) return;
-
-        Arrays.stream(child).filter(sub -> sub.getName().endsWith(".yml")).forEach(sub -> {
-            String shopID = sub.getName().replace(".yml", "");
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(sub);
-            JustStore.getStoreManager().registerShop(shopID, yaml);
-        });
     }
 
     public void loadStore() {

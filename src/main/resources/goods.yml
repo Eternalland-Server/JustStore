@@ -1,0 +1,282 @@
+destroyer_sword:
+  item: destroyer_sword
+  name: '&f&l破灭者之剑'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_sword:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_shield:
+  item: destroyer_shield
+  name: '&f&l破灭者坚盾'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_shield:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+ideal_township_sword:
+  item: ideal_township_sword
+  name: '&f&l理想乡之剑'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_sword:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_shield:
+  item: ideal_township_shield
+  name: '&f&l理想乡坚盾'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_shield:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+
+destroyer_helmet:
+  item: destroyer_helmet
+  name: '&f&l破灭者头盔'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_helmet:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_chestplate:
+  item: destroyer_chestplate
+  name: '&f&l破灭者盔甲'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_chestplate:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_leggings:
+  item: destroyer_leggings
+  name: '&f&l破灭者裤子'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_leggings:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_boots:
+  item: destroyer_boots
+  name: '&f&l破灭者鞋子'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_boots:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+ideal_township_helmet:
+  item: ideal_township_helmet
+  name: '&f&l理想乡头盔'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_helmet:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_chestplate:
+  item: ideal_township_chestplate
+  name: '&f&l理想乡盔甲'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_chestplate:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_leggings:
+  item: ideal_township_leggings
+  name: '&f&l理想乡裤子'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_leggings:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_boots:
+  item: ideal_township_boots
+  name: '&f&l理想乡鞋子'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_boots:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+
+destroyer_glasses:
+  item: destroyer_glasses
+  name: '&f&l破灭者面饰'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_glasses:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_eardrop:
+  item: destroyer_eardrop
+  name: '&f&l破灭者耳环'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_eardrop:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+destroyer_gloves:
+  item: destroyer_gloves
+  name: '&f&l破灭者手套'
+  single: true
+  type: upgrade
+  charge: money
+  price: 1000000
+  consume:
+    - eliminate_gloves:1
+    - destroyer_certify:8
+    - iron_ore_pro:16
+    - moonlight_stone_pro:8
+ideal_township_glasses:
+  item: ideal_township_glasses
+  name: '&f&l理想乡面饰'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_glasses:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_eardrop:
+  item: ideal_township_eardrop
+  name: '&f&l理想乡耳环'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_eardrop:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+ideal_township_gloves:
+  item: ideal_township_gloves
+  name: '&f&l理想乡手套'
+  single: true
+  type: upgrade
+  charge: money
+  price: 5000000
+  consume:
+    - destroyer_gloves:1
+    - ideal_township_certify:12
+    - iron_ore_pro:16
+    - copper_ore_pro:16
+    - sunlight_stone_pro:8
+
+wasp_wings:
+  item: wasp_wings
+  name: '&8&l[&9皇马蜂翅膀&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - beetle_shell:4
+wasp_sting:
+  item: wasp_sting
+  name: '&8&l[&9皇马蜂刺&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - beetle_shell:64
+    - wasp_wings:16
+destroyer_certify:
+  item: destroyer_certify
+  name: '&8&l[&6破灭者证明&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - beetle_shell:64
+    - wasp_wings:32
+    - wasp_sting:1
+snow_deer_antler:
+  item: snow_deer_antler
+  name: '&8&l[&9雪峰鹿角&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - elven_deer_antler:4
+deer_leather:
+  item: deer_leather
+  name: '&8&l[&9鹿皮革&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - elven_deer_antler:64
+    - snow_deer_antler:16
+ideal_township_certify:
+  item: ideal_township_certify
+  name: '&8&l[&6理想乡证明&8&l]'
+  single: false
+  charge: money
+  price: 100000
+  consume:
+    - elven_deer_antler:64
+    - snow_deer_antler:32
+    - deer_leather:1

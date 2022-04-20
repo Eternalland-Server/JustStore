@@ -2,7 +2,7 @@ package net.sakuragame.eternal.juststore.core.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.sakuragame.eternal.juststore.core.Charge;
+import net.sakuragame.eternal.juststore.core.EnumCharge;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ public class Commodity {
     private final boolean single;
     private final String name;
     private final int amount;
-    private final Charge charge;
+    private final EnumCharge charge;
     private final Double price;
 
     public Commodity(String id, ConfigurationSection section) {
@@ -27,7 +27,7 @@ public class Commodity {
         this.single = section.getBoolean("single");
         this.name = section.getString("name");
         this.amount = section.getInt("amount");
-        this.charge = Charge.valueOf(section.getString("charge").toUpperCase());
+        this.charge = EnumCharge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price");
     }
 

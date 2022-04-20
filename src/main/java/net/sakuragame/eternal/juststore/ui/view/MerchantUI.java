@@ -1,4 +1,4 @@
-package net.sakuragame.eternal.juststore.ui.screen;
+package net.sakuragame.eternal.juststore.ui.view;
 
 import com.taylorswiftcn.megumi.uifactory.generate.type.FunctionType;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class ShopScreen extends BaseInventory {
+public class MerchantUI extends BaseInventory {
 
-    public final static String screenID = "eternal_shop";
+    public final static String screenID = "eternal_merchant";
 
-    public ShopScreen() {
+    public MerchantUI() {
         super(screenID);
         this.init();
     }
@@ -34,7 +34,7 @@ public class ShopScreen extends BaseInventory {
                 .addImports(
                         Arrays.asList(
                                 CurrencyComp.screenID,
-                                CommodityComp.SHOP_SHELF_ID,
+                                CommodityComp.Merchant_SHELF_ID,
                                 CategoryComp.screenID,
                                 ScreenManager.getQuantityID()
                         )

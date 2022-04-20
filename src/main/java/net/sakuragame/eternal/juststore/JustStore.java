@@ -1,13 +1,14 @@
 package net.sakuragame.eternal.juststore;
 
+import lombok.Getter;
 import net.sakuragame.eternal.juststore.commands.MainCommand;
+import net.sakuragame.eternal.juststore.core.MerchantManger;
 import net.sakuragame.eternal.juststore.core.StoreManager;
 import net.sakuragame.eternal.juststore.core.UserManager;
 import net.sakuragame.eternal.juststore.file.FileManager;
-import lombok.Getter;
 import net.sakuragame.eternal.juststore.listener.PlayerListener;
 import net.sakuragame.eternal.juststore.listener.PurchaseListener;
-import net.sakuragame.eternal.juststore.listener.ShopListener;
+import net.sakuragame.eternal.juststore.listener.MerchantListener;
 import net.sakuragame.eternal.juststore.listener.StoreListener;
 import net.sakuragame.eternal.juststore.storge.StorageManager;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
@@ -19,6 +20,7 @@ public class JustStore extends JavaPlugin {
 
     @Getter private static FileManager fileManager;
     @Getter private static StoreManager storeManager;
+    @Getter private static MerchantManger merchantManger;
     @Getter private static ScreenManager screenManager;
     @Getter private static StorageManager storageManager;
     @Getter private static UserManager userManager;
@@ -35,6 +37,9 @@ public class JustStore extends JavaPlugin {
         storeManager = new StoreManager(this);
         storeManager.init();
 
+        merchantManger = new MerchantManger(this);
+        merchantManger.init();
+
         screenManager = new ScreenManager();
         screenManager.init();
 
@@ -44,7 +49,7 @@ public class JustStore extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new StoreListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ShopListener(), this);
+        Bukkit.getPluginManager().registerEvents(new MerchantListener(), this);
         Bukkit.getPluginManager().registerEvents(new PurchaseListener(), this);
         getCommand("jstore").setExecutor(new MainCommand());
 
@@ -66,5 +71,6 @@ public class JustStore extends JavaPlugin {
     public void reload() {
         fileManager.init();
         storeManager.init();
+        merchantManger.init();
     }
 }

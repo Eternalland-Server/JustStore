@@ -12,7 +12,7 @@ import net.sakuragame.eternal.juststore.core.order.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
-import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
+import net.sakuragame.eternal.juststore.ui.view.StoreUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,7 +49,7 @@ public class StoreListener implements Listener {
         Player player = e.getPlayer();
 
         String screenID = e.getScreenID();
-        if (!screenID.equals(StoreScreen.screenID)) return;
+        if (!screenID.equals(StoreUI.screenID)) return;
 
         String plugin = e.getParams().getParam(0);
         if (!plugin.equals(JustStore.getInstance().getName())) return;

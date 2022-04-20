@@ -5,13 +5,11 @@ import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.api.event.*;
-import net.sakuragame.eternal.juststore.core.order.ShopOrder;
-import net.sakuragame.eternal.juststore.core.shop.*;
-import net.sakuragame.eternal.juststore.core.shop.goods.Goods;
+import net.sakuragame.eternal.juststore.api.event.StorePurchaseEvent;
+import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
+import net.sakuragame.eternal.juststore.core.order.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Store;
-import net.sakuragame.eternal.juststore.core.order.StoreOrder;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
@@ -19,34 +17,23 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class StoreManager {
 
     private final JustStore plugin;
     private final HashMap<StoreType, Store> stores;
-    private final HashMap<String, Shop> shops;
 
-    private final static HashMap<UUID, String> openMap = new HashMap<>();
     private final static HashMap<UUID, StoreOrder> storeOrder = new HashMap<>();
-    private final static HashMap<UUID, ShopOrder> shopOrder = new HashMap<>();
 
     public StoreManager(JustStore plugin) {
         this.plugin = plugin;
         this.stores = new HashMap<>();
-        this.shops = new HashMap<>();
     }
 
     public void init() {
-        openMap.clear();
-
         JustStore.getFileManager().loadStore();
-        JustStore.getFileManager().loadShops();
-        plugin.getLogger().info(String.format("已载入 %s 个商店", shops.size()));
-    }
-
-    public List<String> getShopsKey() {
-        return new ArrayList<>(shops.keySet());
     }
 
     public void storeBuying(Player player, StoreType type, String commodityID) {
@@ -81,7 +68,7 @@ public class StoreManager {
         preEvent.call();
         if (preEvent.isCancelled()) return;
 
-        Charge charge = commodity.getCharge();
+        EnumCharge charge = commodity.getCharge();
         double price = commodity.getPrice() * quantity * Utils.getDiscount(player);
         double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
         if (balance < price) {
@@ -109,40 +96,13 @@ public class StoreManager {
         return stores.get(type);
     }
 
-    public Shop getShop(String id) {
-        return shops.get(id);
-    }
-
-    public Goods getGoods(Shop shop, int category, String goodsID) {
-        GoodsShelf shelf = shop.getGoodsShelf().get(category);
-        if (shelf != null) {
-            return shelf.getGoods().get(goodsID);
-        }
-
-        return null;
-    }
-
     public void clearDate(UUID uuid) {
-        openMap.remove(uuid);
         storeOrder.remove(uuid);
-        shopOrder.remove(uuid);
     }
 
     public void registerStore(StoreType type, YamlConfiguration yaml) {
         stores.put(type, new Store(yaml));
         plugin.getLogger().info(String.format("已加载 %s 商城( %s 件商品)", type.name(), stores.get(type).getCommodities().size()));
-    }
-
-    public void registerShop(String id, YamlConfiguration yaml) {
-        shops.put(id, new Shop(id, yaml));
-    }
-
-    public static String getOpenShop(UUID uuid) {
-        return openMap.get(uuid);
-    }
-
-    public static void setOpenShop(Player player, String id) {
-        openMap.put(player.getUniqueId(), id);
     }
 
     public static void addStoreOrder(UUID uuid, StoreOrder order) {
@@ -155,17 +115,5 @@ public class StoreManager {
 
     public static StoreOrder getStoreOrder(UUID uuid) {
         return storeOrder.get(uuid);
-    }
-
-    public static void addShopOrder(UUID uuid, ShopOrder order) {
-        shopOrder.put(uuid, order);
-    }
-
-    public static void delShopOrder(UUID uuid) {
-        shopOrder.remove(uuid);
-    }
-
-    public static ShopOrder getShopOrder(UUID uuid) {
-        return shopOrder.get(uuid);
     }
 }

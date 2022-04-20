@@ -7,7 +7,7 @@ import net.sakuragame.eternal.juststore.api.event.StorePurchaseEvent;
 import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
 import net.sakuragame.eternal.juststore.core.UserPurchaseData;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
-import net.sakuragame.eternal.juststore.ui.screen.StoreScreen;
+import net.sakuragame.eternal.juststore.ui.view.StoreUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -58,6 +58,6 @@ public class PurchaseListener implements Listener {
     private void updateButton(Player player, String id, int current, int limit) {
         String buttonID = id + "_buy";
         String text = "&f&l购买(" + current + "/" + limit + ")";
-        PacketSender.sendRunFunction(player, StoreScreen.screenID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
+        PacketSender.sendRunFunction(player, StoreUI.screenID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
     }
 }

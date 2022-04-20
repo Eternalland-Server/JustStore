@@ -1,4 +1,4 @@
-package net.sakuragame.eternal.juststore.core.shop.goods;
+package net.sakuragame.eternal.juststore.core.merchant;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import ink.ptms.zaphkiel.api.ItemStream;
@@ -7,8 +7,8 @@ import ink.ptms.zaphkiel.taboolib.module.nms.ItemTagData;
 import net.sakuragame.eternal.dragoncore.util.Pair;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
-import net.sakuragame.eternal.juststore.core.Charge;
-import net.sakuragame.eternal.juststore.core.shop.TradeType;
+import net.sakuragame.eternal.juststore.api.event.MerchantTradeEvent;
+import net.sakuragame.eternal.juststore.core.EnumCharge;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,9 +20,8 @@ import java.util.UUID;
 
 public class UpgradeGoods extends Goods {
 
-    public UpgradeGoods(String id, TradeType type, ConfigurationSection section) {
-        super(id, type, section);
-        this.setSingle(true);
+    public UpgradeGoods(String ID, ConfigurationSection section) {
+        super(ID, TradeType.UPGRADE, section);
     }
 
     @Override
@@ -34,10 +33,10 @@ public class UpgradeGoods extends Goods {
     public void trade(Player player, int quantity) {
         UUID uuid = player.getUniqueId();
 
-        Charge charge = this.getCharge();
+        EnumCharge charge = this.getCharge();
         double price = this.getPrice() * quantity;
 
-        if (charge != Charge.NONE) {
+        if (charge != EnumCharge.NONE) {
             double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
             if (balance < price) {
                 MessageAPI.sendActionTip(player, "&c&l你没有足够的" + charge.getCurrency().getDisplay());
@@ -77,5 +76,8 @@ public class UpgradeGoods extends Goods {
 
         MessageAPI.sendActionTip(player, "&a&l升级成功！");
         player.sendMessage(ConfigFile.prefix + "你将装备升级成了 " + this.getName());
+
+        MerchantTradeEvent.Post postEvent = new MerchantTradeEvent.Post(player, this, quantity);
+        postEvent.call();
     }
 }
