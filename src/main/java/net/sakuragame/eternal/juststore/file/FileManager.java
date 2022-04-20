@@ -52,7 +52,7 @@ public class FileManager extends JustConfiguration {
 
     private void initStore() {
         File file = new File(plugin.getDataFolder(), "mall");
-        if (!file.exists()) return;
+        if (!file.mkdirs()) return;
 
         File store = new File(file, "store/example.yml");
         File commodity = new File(file, "commodity/example.yml");
