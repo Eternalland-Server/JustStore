@@ -31,7 +31,7 @@ public class Commodity {
         this.price = section.getDouble("price");
     }
 
-    public String getPriceFormat(Player player) {
+    public String formatPrice(Player player) {
         double lastPrice = getPrice() * Utils.getDiscount(player);
         String s = Utils.unitFormatting(lastPrice);
         return charge.getSymbol() + " " + s + " " + charge.getColor() + charge.getCurrency().getDisplay();

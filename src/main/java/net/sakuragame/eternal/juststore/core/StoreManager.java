@@ -5,66 +5,70 @@ import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.api.event.StorePurchaseEvent;
-import net.sakuragame.eternal.juststore.api.event.StorePurchasedEvent;
-import net.sakuragame.eternal.juststore.core.order.StoreOrder;
+import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
-import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.io.File;
+import java.util.*;
 
 public class StoreManager {
 
     private final JustStore plugin;
-    private final HashMap<StoreType, Store> stores;
 
-    private final static HashMap<UUID, StoreOrder> storeOrder = new HashMap<>();
+    private final Map<StoreType, List<String>> stores;
+    private final Map<String, Commodity> commodities;
+
+    private final Map<UUID, String> cache;
 
     public StoreManager(JustStore plugin) {
         this.plugin = plugin;
         this.stores = new HashMap<>();
+        this.commodities = new HashMap<>();
+        this.cache = new HashMap<>();
     }
 
     public void init() {
-        JustStore.getFileManager().loadStore();
+        this.loadStoreFile();
+        this.loadCommodityFile();
+
+        plugin.getLogger().info("已加载 " + stores.size() + " 个商城(" + commodities.size() + "件商品)");
     }
 
-    public void storeBuying(Player player, StoreType type, String commodityID) {
-        storeBuying(player, type, commodityID, null);
+    public List<String> getCommodityID(StoreType key) {
+        return this.stores.get(key);
     }
 
-    public void storeBuying(Player player, StoreType type, String commodityID, Integer quantity) {
+    public Commodity getCommodity(String key) {
+        return this.commodities.get(key);
+    }
+
+    public void trade(Player player, String commodityID) {
+        this.trade(player, commodityID, null);
+    }
+
+    public void trade(Player player, String commodityID, Integer quantity) {
         UUID uuid = player.getUniqueId();
 
-        Store store = stores.get(type);
-        if (store == null) {
-            player.closeInventory();
-            return;
-        }
-
-        Commodity commodity = store.getCommodities().get(commodityID);
-        if (commodity == null) {
-            player.closeInventory();
-            return;
-        }
+        Commodity commodity = this.commodities.get(commodityID);
+        if (commodity == null) return;
 
         if (!commodity.isSingle() && quantity == null) {
             QuantityBox box = new QuantityBox(Operation.StoreOrder.name(), "&6&l购买数量", "&f&l" + commodity.getName());
             box.open(player, true);
-            addStoreOrder(uuid, new StoreOrder(type, commodityID));
+            this.addCache(uuid, commodityID);
             return;
         }
 
         quantity = quantity == null ? 1 : quantity;
 
-        StorePurchaseEvent preEvent = new StorePurchaseEvent(player, type, commodityID, quantity);
+        StoreTradeEvent.Pre preEvent = new StoreTradeEvent.Pre(player, commodity, quantity);
         preEvent.call();
         if (preEvent.isCancelled()) return;
 
@@ -86,34 +90,47 @@ public class StoreManager {
         boughtGoods.setAmount(quantity * commodity.getAmount());
         player.getInventory().addItem(boughtGoods);
 
-        StorePurchasedEvent postEvent = new StorePurchasedEvent(player, type, commodityID, quantity);
-        postEvent.call();
-
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
+
+        StoreTradeEvent.Post postEvent = new StoreTradeEvent.Post(player, commodity, quantity);
+        postEvent.call();
     }
 
-    public Store getStore(StoreType type) {
-        return stores.get(type);
+    public void addCache(UUID uuid, String id) {
+        this.cache.put(uuid, id);
     }
 
-    public void clearDate(UUID uuid) {
-        storeOrder.remove(uuid);
+    public String getCache(UUID uuid) {
+        return this.cache.remove(uuid);
     }
 
-    public void registerStore(StoreType type, YamlConfiguration yaml) {
-        stores.put(type, new Store(yaml));
-        plugin.getLogger().info(String.format("已加载 %s 商城( %s 件商品)", type.name(), stores.get(type).getCommodities().size()));
+    public void delCache(UUID uuid) {
+        this.cache.remove(uuid);
     }
 
-    public static void addStoreOrder(UUID uuid, StoreOrder order) {
-        storeOrder.put(uuid, order);
+    public void loadStoreFile() {
+        for (StoreType type : StoreType.values()) {
+            File file = new File(plugin.getDataFolder(), "mail/store/" + type.getFile());
+            if (!file.exists()) continue;
+
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+            this.stores.put(type, yaml.getStringList("list"));
+        }
     }
 
-    public static void delStoreOrder(UUID uuid) {
-        storeOrder.remove(uuid);
-    }
+    public void loadCommodityFile() {
+        File file = new File(plugin.getDataFolder(), "mall/commodity");
+        File[] files = file.listFiles();
 
-    public static StoreOrder getStoreOrder(UUID uuid) {
-        return storeOrder.get(uuid);
+        if (files == null || files.length == 0) return;
+        Arrays.stream(files)
+                .filter(k -> k.getName().endsWith(".yml"))
+                .forEach(k -> {
+                    YamlConfiguration yaml = YamlConfiguration.loadConfiguration(k);
+                    for (String key : yaml.getKeys(false)) {
+                        ConfigurationSection section = yaml.getConfigurationSection(key);
+                        this.commodities.put(key, new Commodity(key, section));
+                    }
+                });
     }
 }

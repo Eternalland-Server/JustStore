@@ -1,96 +1,16 @@
-goods_1:
-  item: stone_stage
-  tag: hot
-  single: true
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_2:
-  item: stone_realm
-  tag: hot
-  single: true
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
-goods_3:
-  item: stone_stage
-  tag: hot
-  single: true
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_4:
-  item: stone_realm
-  tag: limit
-  single: true
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
-goods_5:
-  item: stone_stage
-  tag: limit
-  single: true
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_6:
-  item: stone_realm
-  tag: limit
-  single: false
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
-goods_7:
-  item: stone_stage
-  tag: new
-  single: false
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_8:
-  item: stone_realm
-  tag: new
-  single: false
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
-goods_9:
-  item: stone_stage
-  tag: new
-  single: false
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_10:
-  item: stone_realm
-  tag: new
-  single: false
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
-goods_11:
-  item: stone_stage
-  tag: new
-  single: false
-  name: '&f&l阶段突破石'
-  amount: 1
-  charge: coins
-  price: 999
-goods_12:
-  item: stone_realm
-  tag: new
-  single: false
-  name: '&f&l境界突破石'
-  amount: 1
-  charge: points
-  price: 999
+list:
+  - stone_stage_money
+  - stone_stage_coins
+  - stone_stage
+  - stone_stage_5
+  - stone_stage_10
+  - stone_stage_50
+  - stone_stage_100
+  - stone_realm
+  - stone_realm_5
+  - stone_realm_10
+  - resurgence_coins
+  - resurgence_coins_3
+  - resurgence_coins_10
+  - resurgence_coins_30
+  - resurgence_coins_100

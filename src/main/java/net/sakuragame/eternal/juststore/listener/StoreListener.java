@@ -3,18 +3,22 @@ package net.sakuragame.eternal.juststore.listener;
 import com.taylorswiftcn.megumi.uifactory.event.comp.UIFCompSubmitEvent;
 import net.sakuragame.eternal.dragoncore.api.CoreAPI;
 import net.sakuragame.eternal.dragoncore.api.KeyPressEvent;
+import net.sakuragame.eternal.dragoncore.network.PacketSender;
+import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEvent;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.StoreManager;
-import net.sakuragame.eternal.juststore.core.order.StoreOrder;
+import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
+import net.sakuragame.eternal.juststore.core.UserPurchaseData;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import net.sakuragame.eternal.juststore.ui.view.StoreUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.UUID;
@@ -51,15 +55,12 @@ public class StoreListener implements Listener {
         String screenID = e.getScreenID();
         if (!screenID.equals(StoreUI.screenID)) return;
 
-        String plugin = e.getParams().getParam(0);
-        if (!plugin.equals(JustStore.getInstance().getName())) return;
-
-        int i = e.getParams().getParamI(1);
+        int i = e.getParams().getParamI(0);
         Operation operation = Operation.match(i);
         if (operation == null) return;
 
         if (operation == Operation.Category) {
-            int id = e.getParams().getParamI(2);
+            int id = e.getParams().getParamI(1);
             StoreType type = StoreType.match(id);
             if (type == null) return;
 
@@ -68,13 +69,8 @@ public class StoreListener implements Listener {
         }
 
         if (operation == Operation.Trade) {
-            int category = e.getParams().getParamI(2);
-            String commodityID = e.getParams().getParam(3);
-
-            StoreType type = StoreType.match(category);
-            if (type == null) return;
-
-            JustStore.getStoreManager().storeBuying(player, type, commodityID);
+            String commodityID = e.getParams().getParam(1);
+            JustStore.getStoreManager().trade(player, commodityID);
         }
     }
 
@@ -86,12 +82,12 @@ public class StoreListener implements Listener {
         String key = e.getKey();
         if (!key.equals(Operation.StoreOrder.name())) return;
 
-        StoreOrder order = StoreManager.getStoreOrder(uuid);
-        if (order == null) return;
+        String id = JustStore.getStoreManager().getCache(uuid);
+        if (id == null) return;
 
         int count = e.getCount();
 
-        JustStore.getStoreManager().storeBuying(player, order.getType(), order.getCommodityID(), count);
+        JustStore.getStoreManager().trade(player, id, count);
         QuantityScreen.hide(player);
     }
 
@@ -103,8 +99,54 @@ public class StoreListener implements Listener {
         if (!key.equals(Operation.StoreOrder.name())) return;
 
         e.setCancelled(true);
-        StoreManager.delStoreOrder(player.getUniqueId());
+        JustStore.getStoreManager().delCache(player.getUniqueId());
         QuantityScreen.hide(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPurchasePre(StoreTradeEvent.Pre e) {
+        if (e.isCancelled()) return;
+
+        String id = e.getCommodity().getId();
+        Integer limit = ConfigFile.purchaseLimit.get(id);
+
+        if (limit == null) return;
+
+        Player player = e.getPlayer();
+        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+
+        int amount = e.getQuantity();
+        int current = account.getCount(id);
+        if (current + amount <= limit) return;
+
+        e.setCancelled(true);
+        if (current == limit) {
+            MessageAPI.sendActionTip(player, "&c&l该商品今日购买次数已达到上限!");
+        }
+        else {
+            MessageAPI.sendActionTip(player, "&c&l该商品你还能购买 &a&l" + (limit - current) + " &c&l次");
+        }
+    }
+
+    @EventHandler
+    public void onPurchasePost(StoreTradeEvent.Post e) {
+        String id = e.getCommodity().getId();
+        Integer limit = ConfigFile.purchaseLimit.get(id);
+
+        if (limit == null) return;
+
+        Player player = e.getPlayer();
+        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+
+        int count = account.addRecord(id, e.getQuantity());
+
+        updateButton(player, id, count, limit);
+    }
+
+    private void updateButton(Player player, String id, int current, int limit) {
+        String buttonID = id + "_b";
+        String text = "&f&l购买(" + current + "/" + limit + ")";
+        PacketSender.sendRunFunction(player, StoreUI.screenID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
     }
 
 }

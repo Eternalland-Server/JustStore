@@ -161,7 +161,7 @@ public class LayoutHandler {
                 .setScale("w/960")
         );
         components.add(new TextureComp(priceID)
-                .setText(commodity.getPriceFormat(player))
+                .setText(commodity.formatPrice(player))
                 .setTexture("0,0,0,0")
                 .setXY(bodyID + ".x", nameID + ".y + 11*(w/960)")
                 .setCompSize("80", "10")
@@ -188,9 +188,8 @@ public class LayoutHandler {
                         .build()
                 )
                 .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/common/button_normal_a.png';")
-                .addAction(ActionType.Left_Release, new SubmitParams(plugin)
+                .addAction(ActionType.Left_Release, new SubmitParams()
                         .addValue(Operation.Trade.getId())
-                        .add("global.eternal_store_category")
                         .addValue(commodity.getId())
                 )
         );

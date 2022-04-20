@@ -2,8 +2,8 @@ package net.sakuragame.eternal.juststore;
 
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.commands.MainCommand;
-import net.sakuragame.eternal.juststore.core.MerchantManger;
 import net.sakuragame.eternal.juststore.core.StoreManager;
+import net.sakuragame.eternal.juststore.core.MerchantManger;
 import net.sakuragame.eternal.juststore.core.UserManager;
 import net.sakuragame.eternal.juststore.file.FileManager;
 import net.sakuragame.eternal.juststore.listener.PlayerListener;

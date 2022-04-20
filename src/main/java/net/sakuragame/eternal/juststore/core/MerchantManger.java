@@ -69,7 +69,7 @@ public class MerchantManger {
     public void loadMerchantFile() {
         this.merchants.clear();
 
-        File file = new File(JustStore.getInstance().getDataFolder(), "merchant/shop");
+        File file = new File(plugin.getDataFolder(), "merchant/shop");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;
@@ -85,7 +85,7 @@ public class MerchantManger {
     public void loadGoodsFile() {
         this.goodsMap.clear();
 
-        File file = new File(JustStore.getInstance().getDataFolder(), "merchant/goods");
+        File file = new File(plugin.getDataFolder(), "merchant/goods");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;

@@ -6,7 +6,6 @@ import net.sakuragame.eternal.justinventory.ui.UIManager;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.merchant.Merchant;
 import net.sakuragame.eternal.juststore.core.merchant.Shelf;
-import net.sakuragame.eternal.juststore.core.store.Store;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.comp.CategoryComp;
@@ -20,6 +19,7 @@ import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScreenManager {
@@ -64,11 +64,11 @@ public class ScreenManager {
     }
 
     public static void openStore(Player player, StoreType type) {
-        Store store = JustStore.getStoreManager().getStore(type);
-        if (store == null) return;
+        List<String> commodityID = JustStore.getStoreManager().getCommodityID(type);
+        if (commodityID == null) return;
 
         CommodityComp comp = new CommodityComp();
-        comp.sendStore(player, store.getCommodities());
+        comp.sendStore(player, commodityID);
 
         PacketSender.sendSyncPlaceholder(player,
                 new HashMap<String, String>() {{

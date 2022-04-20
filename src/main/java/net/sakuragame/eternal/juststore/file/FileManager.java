@@ -2,15 +2,14 @@ package net.sakuragame.eternal.juststore.file;
 
 import com.taylorswiftcn.justwei.file.JustConfiguration;
 import com.taylorswiftcn.justwei.util.MegumiUtil;
+import lombok.Getter;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.file.sub.MessageFile;
-import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.Arrays;
 
 
 public class FileManager extends JustConfiguration {
@@ -52,15 +51,22 @@ public class FileManager extends JustConfiguration {
     }
 
     private void initStore() {
-        File file = new File(plugin.getDataFolder(), "stores");
+        File file = new File(plugin.getDataFolder(), "mall");
         if (!file.exists()) return;
+
+        File store = new File(file, "store/example.yml");
+        File commodity = new File(file, "commodity/example.yml");
+
+        if (store.getParentFile().mkdirs()) {
+            MegumiUtil.copyFile(plugin.getResource("prop.yml"), store);
+        }
+        if (commodity.getParentFile().mkdirs()) {
+            MegumiUtil.copyFile(plugin.getResource("commodity.yml"), commodity);
+        }
 
         for (StoreType type : StoreType.values()) {
             File sub = new File(file, type.getFile());
-            if (type.getFile().equals("prop.yml")) {
-                MegumiUtil.copyFile(plugin.getResource("store.yml"), sub);
-                continue;
-            }
+            if (type.getFile().equals("prop.yml")) continue;
 
             try {
                 sub.createNewFile();
@@ -68,18 +74,6 @@ public class FileManager extends JustConfiguration {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void loadStore() {
-        File file = new File(plugin.getDataFolder(), "stores");
-
-        for (StoreType type : StoreType.values()) {
-            File sub = new File(file, type.getFile());
-            if (!sub.exists()) continue;
-
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(sub);
-            JustStore.getStoreManager().registerStore(type, yaml);
         }
     }
 }

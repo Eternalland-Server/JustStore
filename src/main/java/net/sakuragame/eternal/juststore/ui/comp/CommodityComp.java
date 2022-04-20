@@ -15,7 +15,6 @@ import net.sakuragame.eternal.juststore.ui.LayoutHandler;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 public class CommodityComp extends BaseInventory {
 
@@ -71,10 +70,10 @@ public class CommodityComp extends BaseInventory {
         PacketSender.sendYaml(player, FolderType.Gui, Merchant_SHELF_ID, yaml);
     }
 
-    public void sendStore(Player player, Map<String, Commodity> commodities) {
+    public void sendStore(Player player, List<String> commodityID) {
         ScreenUI ui = new ScreenUI(STORE_SHELF_ID);
 
-        int line = (int) Math.ceil(commodities.size() / 5.0);
+        int line = (int) Math.ceil(commodityID.size() / 5.0);
         int surplus = Math.max(1, line - 2);
 
         ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", "12", 216.0 / surplus + "*(w/960)", "126.5");
@@ -101,7 +100,8 @@ public class CommodityComp extends BaseInventory {
                 .setThumb((TextureComp) thumb);
 
         int i = 1;
-        for (Commodity commodity : commodities.values()) {
+        for (String key : commodityID) {
+            Commodity commodity = JustStore.getStoreManager().getCommodity(key);
             comp.addContent(LayoutHandler.build(player, i, commodity));
             i++;
         }

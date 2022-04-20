@@ -1,0 +1,120 @@
+stone_stage_money:
+  item: stone_stage
+  tag: limit
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 1
+  charge: money
+  price: 1000000
+stone_stage_coins:
+  item: stone_stage
+  tag: limit
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 1
+  charge: coins
+  price: 10000
+stone_stage:
+  item: stone_stage
+  tag: hot
+  single: false
+  name: '&f&l阶段突破石'
+  amount: 1
+  charge: points
+  price: 2000
+stone_stage_5:
+  item: stone_stage
+  tag: hot
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 5
+  charge: points
+  price: 8000
+stone_stage_10:
+  item: stone_stage
+  tag: hot
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 10
+  charge: points
+  price: 16000
+stone_stage_50:
+  item: stone_stage
+  tag: new
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 50
+  charge: points
+  price: 80000
+stone_stage_100:
+  item: stone_stage
+  tag: new
+  single: true
+  name: '&f&l阶段突破石'
+  amount: 100
+  charge: points
+  price: 160000
+stone_realm:
+  item: stone_realm
+  tag: hot
+  single: false
+  name: '&f&l境界突破石'
+  amount: 1
+  charge: points
+  price: 20000
+stone_realm_5:
+  item: stone_realm
+  tag: hot
+  single: true
+  name: '&f&l境界突破石'
+  amount: 5
+  charge: points
+  price: 80000
+stone_realm_10:
+  item: stone_realm
+  tag: new
+  single: true
+  name: '&f&l境界突破石'
+  amount: 10
+  charge: points
+  price: 160000
+resurgence_coins:
+  item: resurgence_coins
+  tag: limit
+  single: true
+  name: '&f&l复活币'
+  amount: 1
+  charge: coins
+  price: 10000
+resurgence_coins_3:
+  item: resurgence_coins
+  tag: hot
+  single: true
+  name: '&f&l复活币'
+  amount: 3
+  charge: points
+  price: 2000
+resurgence_coins_10:
+  item: resurgence_coins
+  tag: hot
+  single: true
+  name: '&f&l复活币'
+  amount: 10
+  charge: points
+  price: 6000
+resurgence_coins_30:
+  item: resurgence_coins
+  tag: new
+  single: true
+  name: '&f&l复活币'
+  amount: 30
+  charge: points
+  price: 18000
+resurgence_coins_100:
+  item: resurgence_coins
+  tag: new
+  single: true
+  name: '&f&l复活币'
+  amount: 100
+  charge: points
+  price: 60000
