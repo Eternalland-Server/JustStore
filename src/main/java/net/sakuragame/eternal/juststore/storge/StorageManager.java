@@ -30,7 +30,7 @@ public class StorageManager {
         String key = getUserKey(uuid);
         this.connection.async().hset(key, id, String.valueOf(amount));
         if (expire) {
-            this.connection.async().expire(key, Utils.getNextDayTime());
+            this.connection.async().pexpireat(key, Utils.getNextDayTime());
         }
     }
 
