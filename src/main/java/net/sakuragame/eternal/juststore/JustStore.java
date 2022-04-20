@@ -7,7 +7,6 @@ import net.sakuragame.eternal.juststore.core.MerchantManger;
 import net.sakuragame.eternal.juststore.core.UserManager;
 import net.sakuragame.eternal.juststore.file.FileManager;
 import net.sakuragame.eternal.juststore.listener.PlayerListener;
-import net.sakuragame.eternal.juststore.listener.PurchaseListener;
 import net.sakuragame.eternal.juststore.listener.MerchantListener;
 import net.sakuragame.eternal.juststore.listener.StoreListener;
 import net.sakuragame.eternal.juststore.storge.StorageManager;
@@ -50,7 +49,6 @@ public class JustStore extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new StoreListener(), this);
         Bukkit.getPluginManager().registerEvents(new MerchantListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PurchaseListener(), this);
         getCommand("jstore").setExecutor(new MainCommand());
 
         long end = System.currentTimeMillis();

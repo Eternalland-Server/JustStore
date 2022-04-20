@@ -45,5 +45,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
+        UUID uuid = player.getUniqueId();
+
+        JustStore.getStoreManager().delCache(uuid);
+        JustStore.getMerchantManger().delCache(uuid);
+        JustStore.getUserManager().removeAccount(uuid);
     }
 }
