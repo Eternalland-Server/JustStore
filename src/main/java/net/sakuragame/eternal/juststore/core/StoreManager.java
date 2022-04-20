@@ -119,7 +119,7 @@ public class StoreManager {
     }
 
     public void loadCommodityFile() {
-        File file = new File(plugin.getDataFolder(), "mall/commodity");
+        File file = new File(plugin.getDataFolder(), "mail/commodity");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;
