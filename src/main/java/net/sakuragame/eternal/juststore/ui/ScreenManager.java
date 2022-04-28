@@ -4,6 +4,7 @@ import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justinventory.JustInventory;
 import net.sakuragame.eternal.justinventory.ui.UIManager;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.api.event.StoreOpenEvent;
 import net.sakuragame.eternal.juststore.core.merchant.Merchant;
 import net.sakuragame.eternal.juststore.core.merchant.Shelf;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
@@ -64,7 +65,11 @@ public class ScreenManager {
     }
 
     public static void openStore(Player player, StoreType type) {
-        List<String> commodityID = JustStore.getStoreManager().getCommodityID(type);
+        StoreOpenEvent event = new StoreOpenEvent(player, type);
+        event.call();
+        if (event.isCancelled()) return;
+
+        List<String> commodityID = JustStore.getStoreManager().getCommodityID(event.getType());
         if (commodityID == null) return;
 
         CommodityComp comp = new CommodityComp();

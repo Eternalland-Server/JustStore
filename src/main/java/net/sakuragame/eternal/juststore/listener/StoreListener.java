@@ -46,11 +46,7 @@ public class StoreListener implements Listener {
         if (!e.getScreenID().equals("function_hud")) return;
         if (!e.getCompID().equals("store")) return;
 
-        StoreOpenEvent event = new StoreOpenEvent(player, StoreType.Prop);
-        event.call();
-        if (event.isCancelled()) return;
-
-        ScreenManager.openStore(player, event.getType());
+        ScreenManager.openStore(player, StoreType.Prop);
     }
 
     @EventHandler
