@@ -108,7 +108,7 @@ public class Utils {
             ItemTagData grade = itemStream.getZaphkielData().getDeep("justattribute.grade");
             ItemTagData potency = itemStream.getZaphkielData().getDeep("justattribute.potency");
 
-            if (grade == null) return null;
+            if (grade == null || grade.asInt() == -1) return null;
 
             return new Pair<>(grade, potency);
         }
