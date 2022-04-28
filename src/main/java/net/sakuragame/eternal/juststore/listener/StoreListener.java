@@ -9,6 +9,7 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEv
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
+import net.sakuragame.eternal.juststore.api.event.StoreOpenEvent;
 import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
 import net.sakuragame.eternal.juststore.core.UserPurchaseData;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
@@ -45,7 +46,11 @@ public class StoreListener implements Listener {
         if (!e.getScreenID().equals("function_hud")) return;
         if (!e.getCompID().equals("store")) return;
 
-        ScreenManager.openStore(player, StoreType.Prop);
+        StoreOpenEvent event = new StoreOpenEvent(player, StoreType.Prop);
+        event.call();
+        if (event.isCancelled()) return;
+
+        ScreenManager.openStore(player, event.getType());
     }
 
     @EventHandler
