@@ -4,8 +4,8 @@ import lombok.Getter;
 
 public enum CommandPerms {
 
-    USER("justinventory.user"),
-    ADMIN("justinventory.admin");
+    USER("juststore.user"),
+    ADMIN("juststore.admin");
 
     @Getter
     private final String node;

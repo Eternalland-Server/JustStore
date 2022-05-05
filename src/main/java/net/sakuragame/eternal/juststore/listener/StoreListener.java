@@ -1,15 +1,12 @@
 package net.sakuragame.eternal.juststore.listener;
 
 import com.taylorswiftcn.megumi.uifactory.event.comp.UIFCompSubmitEvent;
-import net.sakuragame.eternal.dragoncore.api.CoreAPI;
-import net.sakuragame.eternal.dragoncore.api.KeyPressEvent;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxCancelEvent;
 import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmEvent;
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.api.event.StoreOpenEvent;
 import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
 import net.sakuragame.eternal.juststore.core.UserPurchaseData;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
@@ -25,20 +22,6 @@ import org.bukkit.event.Listener;
 import java.util.UUID;
 
 public class StoreListener implements Listener {
-
-    public StoreListener() {
-        CoreAPI.registerKey("G");
-    }
-
-    @EventHandler
-    public void onKeyPress(KeyPressEvent e) {
-        Player player = e.getPlayer();
-        String key = e.getKey();
-
-        if (!key.equals("G")) return;
-
-        ScreenManager.openStore(player, StoreType.Prop);
-    }
 
     @EventHandler
     public void onHudSubmit(UIFCompSubmitEvent e) {
