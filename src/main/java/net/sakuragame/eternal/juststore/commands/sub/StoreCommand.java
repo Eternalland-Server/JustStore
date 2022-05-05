@@ -19,6 +19,7 @@ public class StoreCommand extends SubCommand {
         if (args.length < 1) return;
 
         Player player = Bukkit.getPlayerExact(args[0]);
+        if (player == null) return;
         JustStoreAPI.openStore(player, StoreType.Prop.getId());
     }
 
