@@ -29,6 +29,6 @@ public class StoreCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return CommandPerms.USER.getNode();
+        return CommandPerms.ADMIN.getNode();
     }
 }
