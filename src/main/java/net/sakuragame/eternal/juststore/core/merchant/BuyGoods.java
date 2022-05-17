@@ -53,7 +53,7 @@ public class BuyGoods extends Goods {
             player.sendMessage(" §c§l购买失败，请联系管理员");
             return;
         }
-        charge.withdraw(player, price);
+        if (charge != EnumCharge.NONE) charge.withdraw(player, price);
 
         boughtGoods.setAmount(quantity * this.getAmount());
         player.getInventory().addItem(boughtGoods);
