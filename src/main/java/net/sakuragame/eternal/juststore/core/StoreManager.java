@@ -110,7 +110,7 @@ public class StoreManager {
 
     public void loadStoreFile() {
         for (StoreType type : StoreType.values()) {
-            File file = new File(plugin.getDataFolder(), "mail/store/" + type.getFile());
+            File file = new File(plugin.getDataFolder(), "mall/store/" + type.getFile());
             if (!file.exists()) continue;
 
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -119,7 +119,7 @@ public class StoreManager {
     }
 
     public void loadCommodityFile() {
-        File file = new File(plugin.getDataFolder(), "mail/commodity");
+        File file = new File(plugin.getDataFolder(), "mall/commodity");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;
