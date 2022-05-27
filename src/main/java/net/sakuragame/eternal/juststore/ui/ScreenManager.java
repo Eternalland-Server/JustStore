@@ -1,8 +1,6 @@
 package net.sakuragame.eternal.juststore.ui;
 
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
-import net.sakuragame.eternal.justinventory.JustInventory;
-import net.sakuragame.eternal.justinventory.ui.UIManager;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.StoreOpenEvent;
 import net.sakuragame.eternal.juststore.core.merchant.Merchant;
@@ -14,8 +12,6 @@ import net.sakuragame.eternal.juststore.ui.comp.CommodityComp;
 import net.sakuragame.eternal.juststore.ui.comp.economy.CurrencyComp;
 import net.sakuragame.eternal.juststore.ui.comp.economy.EconomyComp;
 import net.sakuragame.eternal.juststore.ui.comp.economy.FishComp;
-import net.sakuragame.eternal.juststore.ui.view.MerchantUI;
-import net.sakuragame.eternal.juststore.ui.view.StoreUI;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.entity.Player;
 
@@ -25,16 +21,8 @@ import java.util.Map;
 
 public class ScreenManager {
 
-    private final UIManager uiManager;
-
-    public ScreenManager() {
-        this.uiManager = JustInventory.getInstance().getUiManager();
-    }
-
-    public void init() {
-        uiManager.registerUI(new MerchantUI());
-        uiManager.registerUI(new StoreUI());
-    }
+    public final static String Merchant_ID = "eternal_merchant";
+    public final static String Store_ID = "eternal_store";
 
     public static void openMerchant(Player player, String shopID) {
         openMerchant(player, shopID, null);
@@ -61,7 +49,7 @@ public class ScreenManager {
 
         PacketSender.sendSyncPlaceholder(player, map);
         PacketSender.sendRunFunction(player, "default", "global.eternal_shop_category = '" + shelf.getID() + "';", false);
-        PacketSender.sendOpenGui(player, MerchantUI.screenID);
+        PacketSender.sendOpenGui(player, Merchant_ID);
     }
 
     public static void openStore(Player player, StoreType type) {
@@ -81,7 +69,7 @@ public class ScreenManager {
                 }}
         );
         PacketSender.sendRunFunction(player, "default", "global.eternal_store_category = " + type.getId() + ";", false);
-        PacketSender.sendOpenGui(player, StoreUI.screenID);
+        PacketSender.sendOpenGui(player, Store_ID);
     }
 
 }

@@ -11,7 +11,6 @@ import net.sakuragame.eternal.juststore.core.merchant.BuyGoods;
 import net.sakuragame.eternal.juststore.core.merchant.Goods;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
-import net.sakuragame.eternal.juststore.ui.view.MerchantUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +24,7 @@ public class MerchantListener implements Listener {
         Player player = e.getPlayer();
 
         String screenID = e.getScreenID();
-        if (!screenID.equals(MerchantUI.screenID)) return;
+        if (!screenID.equals(ScreenManager.Merchant_ID)) return;
 
         int i = e.getParams().getParamI(0);
         Operation operation = Operation.match(i);

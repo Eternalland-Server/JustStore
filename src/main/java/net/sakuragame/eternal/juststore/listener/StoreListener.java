@@ -13,7 +13,6 @@ import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
-import net.sakuragame.eternal.juststore.ui.view.StoreUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,7 +36,7 @@ public class StoreListener implements Listener {
         Player player = e.getPlayer();
 
         String screenID = e.getScreenID();
-        if (!screenID.equals(StoreUI.screenID)) return;
+        if (!screenID.equals(ScreenManager.Store_ID)) return;
 
         int i = e.getParams().getParamI(0);
         Operation operation = Operation.match(i);
@@ -130,7 +129,7 @@ public class StoreListener implements Listener {
     private void updateButton(Player player, String id, int current, int limit) {
         String buttonID = id + "_b";
         String text = "&f&l购买(" + current + "/" + limit + ")";
-        PacketSender.sendRunFunction(player, StoreUI.screenID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
+        PacketSender.sendRunFunction(player, ScreenManager.Store_ID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
     }
 
 }

@@ -6,7 +6,6 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.component.custom.ScrollBar
 import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
-import net.sakuragame.eternal.justinventory.ui.BaseInventory;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.merchant.Goods;
 import net.sakuragame.eternal.juststore.core.merchant.Shelf;
@@ -16,14 +15,11 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class CommodityComp extends BaseInventory {
+public class CommodityComp {
 
+    private ScreenUI ui;
     public final static String Merchant_SHELF_ID = "eternal_shop_shelf";
     public final static String STORE_SHELF_ID = "eternal_store_shelf";
-
-    public CommodityComp() {
-        super(Merchant_SHELF_ID);
-    }
 
     public void sendMerchant(Player player, Shelf shelf) {
         ScreenUI ui = new ScreenUI(Merchant_SHELF_ID);
@@ -65,9 +61,7 @@ public class CommodityComp extends BaseInventory {
 
         ui.addComponent(comp);
 
-        yaml = ui.build(player);
-
-        PacketSender.sendYaml(player, FolderType.Gui, Merchant_SHELF_ID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, Merchant_SHELF_ID, ui.build(player));
     }
 
     public void sendStore(Player player, List<String> commodityID) {
@@ -107,8 +101,6 @@ public class CommodityComp extends BaseInventory {
         }
         ui.addComponent(comp);
 
-        yaml = ui.build(player);
-
-        PacketSender.sendYaml(player, FolderType.Gui, STORE_SHELF_ID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, STORE_SHELF_ID, ui.build(player));
     }
 }

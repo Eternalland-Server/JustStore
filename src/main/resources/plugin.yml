@@ -8,7 +8,6 @@ depend:
   - DragonCore
   - UIFactory
   - Zaphkiel
-  - JustInventory
 
 commands:
   jstore:

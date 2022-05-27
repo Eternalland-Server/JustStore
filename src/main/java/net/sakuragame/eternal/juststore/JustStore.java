@@ -2,15 +2,14 @@ package net.sakuragame.eternal.juststore;
 
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.commands.MainCommand;
-import net.sakuragame.eternal.juststore.core.StoreManager;
 import net.sakuragame.eternal.juststore.core.MerchantManger;
+import net.sakuragame.eternal.juststore.core.StoreManager;
 import net.sakuragame.eternal.juststore.core.UserManager;
 import net.sakuragame.eternal.juststore.file.FileManager;
-import net.sakuragame.eternal.juststore.listener.PlayerListener;
 import net.sakuragame.eternal.juststore.listener.MerchantListener;
+import net.sakuragame.eternal.juststore.listener.PlayerListener;
 import net.sakuragame.eternal.juststore.listener.StoreListener;
 import net.sakuragame.eternal.juststore.storge.StorageManager;
-import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,7 +19,6 @@ public class JustStore extends JavaPlugin {
     @Getter private static FileManager fileManager;
     @Getter private static StoreManager storeManager;
     @Getter private static MerchantManger merchantManger;
-    @Getter private static ScreenManager screenManager;
     @Getter private static StorageManager storageManager;
     @Getter private static UserManager userManager;
 
@@ -38,9 +36,6 @@ public class JustStore extends JavaPlugin {
 
         merchantManger = new MerchantManger(this);
         merchantManger.init();
-
-        screenManager = new ScreenManager();
-        screenManager.init();
 
         storageManager = new StorageManager();
 

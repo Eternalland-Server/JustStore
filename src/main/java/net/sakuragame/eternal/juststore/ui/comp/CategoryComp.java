@@ -3,19 +3,20 @@ package net.sakuragame.eternal.juststore.ui.comp;
 import com.taylorswiftcn.megumi.uifactory.generate.function.SubmitParams;
 import com.taylorswiftcn.megumi.uifactory.generate.type.ActionType;
 import com.taylorswiftcn.megumi.uifactory.generate.ui.component.base.TextureComp;
+import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
-import net.sakuragame.eternal.justinventory.ui.BaseInventory;
 import net.sakuragame.eternal.juststore.core.merchant.Merchant;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import org.bukkit.entity.Player;
 
-public class CategoryComp extends BaseInventory {
+public class CategoryComp {
 
+    private final ScreenUI ui;
     public final static String screenID = "eternal_shop_category";
 
     public CategoryComp() {
-        super(screenID);
+        this.ui = new ScreenUI(screenID);
     }
 
     public void send(Player player, Merchant merchant) {
@@ -38,8 +39,6 @@ public class CategoryComp extends BaseInventory {
             i++;
         }
 
-        yaml = ui.build(null);
-
-        PacketSender.sendYaml(player, FolderType.Gui, screenID, yaml);
+        PacketSender.sendYaml(player, FolderType.Gui, screenID, ui.build(null));
     }
 }
