@@ -31,6 +31,7 @@ public class CategoryComp {
                             .setExtend("category_" + i)
                             .addAction(ActionType.Left_Click, new SubmitParams()
                                     .setCondition("global.eternal_shop_category != '" + key + "'")
+                                    .addValue("Trade")
                                     .addValue(Operation.Category.getId())
                                     .addValue(merchant.getID())
                                     .addValue(key)

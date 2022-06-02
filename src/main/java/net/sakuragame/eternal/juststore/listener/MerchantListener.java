@@ -26,19 +26,22 @@ public class MerchantListener implements Listener {
         String screenID = e.getScreenID();
         if (!screenID.equals(ScreenManager.Merchant_ID)) return;
 
-        int i = e.getParams().getParamI(0);
+        String s = e.getParams().getParam(0);
+        if (!s.equals("Trade")) return;
+
+        int i = e.getParams().getParamI(1);
         Operation operation = Operation.match(i);
         if (operation == null) return;
 
         if (operation == Operation.Category) {
-            String merchantID = e.getParams().getParam(1);
-            String shelfID = e.getParams().getParam(2);
+            String merchantID = e.getParams().getParam(2);
+            String shelfID = e.getParams().getParam(3);
             ScreenManager.openMerchant(player, merchantID, shelfID);
             return;
         }
 
         if (operation == Operation.Trade) {
-            String goodsID = e.getParams().getParam(1);
+            String goodsID = e.getParams().getParam(2);
             Goods goods = JustStore.getMerchantManger().getGoods(goodsID);
             if (goods == null) return;
 

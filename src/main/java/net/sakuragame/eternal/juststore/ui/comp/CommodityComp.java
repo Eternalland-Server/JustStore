@@ -70,7 +70,7 @@ public class CommodityComp {
         int line = (int) Math.ceil(commodityID.size() / 5.0);
         int surplus = Math.max(1, line - 2);
 
-        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", "12", 216.0 / surplus + "*(w/960)", "126.5");
+        ScrollBarComp comp = new ScrollBarComp("goods_scrollbar", 12, 216.0 / surplus, 126.5);
         comp
                 .setTexture("0,0,0,0")
                 .setXY("goods_sub.x", "goods_sub.y")
