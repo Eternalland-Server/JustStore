@@ -38,12 +38,15 @@ public class StoreListener implements Listener {
         String screenID = e.getScreenID();
         if (!screenID.equals(ScreenManager.Store_ID)) return;
 
-        int i = e.getParams().getParamI(0);
+        String s = e.getParams().getParam(0);
+        if (!s.equals("Trade")) return;
+
+        int i = e.getParams().getParamI(1);
         Operation operation = Operation.match(i);
         if (operation == null) return;
 
         if (operation == Operation.Category) {
-            int id = e.getParams().getParamI(1);
+            int id = e.getParams().getParamI(2);
             StoreType type = StoreType.match(id);
             if (type == null) return;
 
@@ -52,7 +55,7 @@ public class StoreListener implements Listener {
         }
 
         if (operation == Operation.Trade) {
-            String commodityID = e.getParams().getParam(1);
+            String commodityID = e.getParams().getParam(2);
             JustStore.getStoreManager().trade(player, commodityID);
         }
     }

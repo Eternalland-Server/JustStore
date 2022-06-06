@@ -189,6 +189,7 @@ public class LayoutHandler {
                 )
                 .addAction(ActionType.Left_Release, buyID + ".texture = 'ui/common/button_normal_a.png';")
                 .addAction(ActionType.Left_Release, new SubmitParams()
+                        .addValue("Trade")
                         .addValue(Operation.Trade.getId())
                         .addValue(commodity.getId())
                 )
