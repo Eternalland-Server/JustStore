@@ -24,8 +24,6 @@ import java.util.*;
 
 public class LayoutHandler {
 
-    private static final JustStore plugin = JustStore.getInstance();
-
     public static LinkedList<BasicComponent> build(Player player, int index, Goods goods) {
         LinkedList<BasicComponent> components = new LinkedList<>();
 

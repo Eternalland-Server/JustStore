@@ -31,6 +31,11 @@ public class BuyGoods extends Goods {
         EnumCharge charge = this.getCharge();
         double price = this.getPrice() * quantity;
 
+        if (Utils.getEmptySlotCount(player) == 0) {
+            player.sendMessage(ConfigFile.prefix + "交易前请确保背包内有空余的槽位");
+            return;
+        }
+
         if (charge != EnumCharge.NONE) {
             double balance = GemsEconomyAPI.getBalance(uuid, charge.getCurrency());
             if (balance < price) {

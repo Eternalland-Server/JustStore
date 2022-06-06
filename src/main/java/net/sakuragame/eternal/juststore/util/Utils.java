@@ -125,4 +125,14 @@ public class Utils {
 
         return calendar.getTimeInMillis() - System.currentTimeMillis();
     }
+
+    public static int getEmptySlotCount(Player player) {
+        int i = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (!MegumiUtil.isEmpty(item)) continue;
+            i++;
+        }
+
+        return i;
+    }
 }

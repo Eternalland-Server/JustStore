@@ -8,6 +8,7 @@ import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
+import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -58,6 +59,11 @@ public class StoreManager {
 
         Commodity commodity = this.commodities.get(commodityID);
         if (commodity == null) return;
+
+        if (Utils.getEmptySlotCount(player) == 0) {
+            MessageAPI.sendActionTip(player, "&a&l交易前请确保背包内有空余的槽位");
+            return;
+        }
 
         if (!commodity.isSingle() && quantity == null) {
             QuantityBox box = new QuantityBox(Operation.StoreOrder.name(), "&6&l购买数量", "&f&l" + commodity.getName());
