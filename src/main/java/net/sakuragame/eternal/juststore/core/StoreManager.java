@@ -2,6 +2,7 @@ package net.sakuragame.eternal.juststore.core;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
+import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
 import net.sakuragame.eternal.justmessage.api.common.QuantityBox;
 import net.sakuragame.eternal.juststore.JustStore;
@@ -91,7 +92,13 @@ public class StoreManager {
             player.sendMessage(" §c§l购买失败，请联系管理员");
             return;
         }
-        charge.withdraw(player, price);
+
+        if (charge.getCurrency() == EternalCurrency.Points) {
+            charge.withdraw(player, price, "购买 " + commodityID + " x" + quantity);
+        }
+        else {
+            charge.withdraw(player, price);
+        }
 
         boughtGoods.setAmount(quantity * commodity.getAmount());
         player.getInventory().addItem(boughtGoods);

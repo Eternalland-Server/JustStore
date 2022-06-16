@@ -5,6 +5,8 @@ import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.gemseconomy.currency.EternalCurrency;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 @Getter
 public enum EnumCharge {
 
@@ -36,5 +38,9 @@ public enum EnumCharge {
 
     public void withdraw(Player player, double value) {
         GemsEconomyAPI.withdraw(player.getUniqueId(), value, getCurrency());
+    }
+
+    public void withdraw(Player player, double value, String reason) {
+        GemsEconomyAPI.withdraw(player.getUniqueId(), value, getCurrency(), reason);
     }
 }
