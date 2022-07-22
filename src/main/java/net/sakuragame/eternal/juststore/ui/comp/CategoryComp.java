@@ -29,6 +29,7 @@ public class CategoryComp {
                             .setText(name)
                             .setTexture("(global.eternal_shop_category=='" + key + "')?'ui/store/shop/selected.png':'ui/store/shop/unselected.png'")
                             .setExtend("category_" + i)
+                            .addAction(ActionType.Left_Click, "func.Sound_Play();")
                             .addAction(ActionType.Left_Click, new SubmitParams()
                                     .setCondition("global.eternal_shop_category != '" + key + "'")
                                     .addValue("Trade")

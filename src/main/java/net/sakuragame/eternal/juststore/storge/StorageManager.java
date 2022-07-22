@@ -16,8 +16,8 @@ public class StorageManager {
         this.connection = ClientManagerAPI.getRedisManager().getStandaloneConn();
     }
 
-    public HashMap<String, Integer> getUserData(UUID uuid) {
-        Map<String, String> result = connection.sync().hgetall(getUserKey(uuid));
+    public Map<String, Integer> getMallRecord(UUID uuid) {
+        Map<String, String> result = connection.sync().hgetall(this.getMallKey(uuid));
         if (result == null) return new HashMap<>();
 
         HashMap<String, Integer> map = new HashMap<>();
@@ -26,19 +26,33 @@ public class StorageManager {
         return map;
     }
 
-    public void setUserData(UUID uuid, String id, int amount, boolean expire) {
-        String key = getUserKey(uuid);
-        this.connection.async().hset(key, id, String.valueOf(amount));
-        if (expire) {
-            this.connection.async().pexpireat(key, Utils.getNextDayTime());
-        }
+    public void setMallRecord(UUID uuid, String id, int amount) {
+        String key = this.getMallKey(uuid);
+        this.connection.sync().hset(key, id, String.valueOf(amount));
+        this.connection.sync().expire(key, Utils.getNextDayTime());
     }
 
-    public static String getUserKey(UUID uuid) {
-        return "JustStore:" + uuid.toString();
+    public Map<String, Integer> getShopRecord(UUID uuid) {
+        Map<String, String> result = connection.sync().hgetall(this.getShopKey(uuid));
+        if (result == null) return new HashMap<>();
+
+        HashMap<String, Integer> map = new HashMap<>();
+        result.forEach((key, value) -> map.put(key, Integer.parseInt(value)));
+
+        return map;
     }
 
-    public StatefulRedisConnection<String, String> getConnection() {
-        return connection;
+    public void setShopRecord(UUID uuid, String id, int amount) {
+        String key = this.getShopKey(uuid);
+        this.connection.sync().hset(key, id, String.valueOf(amount));
+        this.connection.sync().expire(key, Utils.getNextDayTime());
+    }
+
+    public String getMallKey(UUID uuid) {
+        return "JustStore:Mall:" + uuid.toString();
+    }
+
+    public String getShopKey(UUID uuid) {
+        return "JustStore:Shop:" + uuid.toString();
     }
 }

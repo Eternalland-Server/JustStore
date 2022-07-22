@@ -11,8 +11,8 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.component.custom.ScrollBar
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.UserPurchaseData;
-import net.sakuragame.eternal.juststore.core.merchant.Goods;
+import net.sakuragame.eternal.juststore.core.UserAccount;
+import net.sakuragame.eternal.juststore.core.merchant.goods.Goods;
 import net.sakuragame.eternal.juststore.core.merchant.TradeType;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.Tag;
@@ -35,6 +35,7 @@ public class LayoutHandler {
         String priceID = bodyID + "_p";
         String requireID = bodyID + "_r";
         String consumeID = bodyID + "_c";
+        String limitID = "l_" + goods.getID();
         String operateID = bodyID + "_o";
 
         components.add(new TextureComp(bodyID)
@@ -57,11 +58,11 @@ public class LayoutHandler {
                 .setY(frameID + ".y + 2")
         );
         components.add(new LabelComp(priceID, goods.formatPrice())
-                .setX(bodyID + ".x + (" + bodyID + ".width - " + priceID + ".width) -6")
+                .setX(bodyID + ".x + (" + bodyID + ".width - " + priceID + ".width)-6")
                 .setY(nameID + ".y")
         );
         components.add(new TextureComp(consumeID)
-                .setXY(requireID + ".x", requireID + ".y + 9")
+                .setXY(requireID + ".x", requireID + ".y + 10")
         );
 
         ItemStack item = ZaphkielAPI.INSTANCE.getItemStack(goods.getItem(), null);
@@ -84,17 +85,9 @@ public class LayoutHandler {
                     ItemStack consumeItem = ZaphkielAPI.INSTANCE.getItemStack(key, null);
                     int amount = consume.get(key);
                     do {
-                        String id = "g_" + index + "_sbg_" + i;
-                        components.add(new TextureComp(id)
-                                .setTexture("ui/pack/slot_bg.png")
-                                .setX(consumeID + ".x + 19*" + i)
-                                .setY(consumeID + ".y")
-                                .setCompSize(16, 16)
-                        );
                         components.add(new SlotComp("g_" + index + "_c_" + i, goods.getConsumeSlot(index, i))
                                 .setDrawBackground(false)
-                                .setXY(id + ".x + 2", id + ".y + 2")
-                                .setScale(0.75)
+                                .setXY(consumeID + ".x + 19*" + i, consumeID + ".y")
                         );
 
                         if (consumeItem != null) {
@@ -112,6 +105,16 @@ public class LayoutHandler {
                     } while (amount != 0);
                 }
             }
+        }
+
+        if (goods.getLimit() > 0) {
+            UserAccount account = JustStore.getUserManager().getAccount(player);
+            components.add(new TextureComp(limitID)
+                    .setTexture("0,0,0,0")
+                    .setText("(" + account.getShopCount(goods.getID()) + "/" + goods.getLimit() + ")")
+                    .setXY(operateID + ".x", operateID + ".y-10")
+                    .setCompSize(operateID + ".width", "10")
+            );
         }
 
         components.add(new TextureComp(operateID)
@@ -172,10 +175,10 @@ public class LayoutHandler {
                 .setScale("2.7*(w/960)")
         );
 
-        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+        UserAccount account = JustStore.getUserManager().getAccount(player);
         String commodityID = commodity.getId();
-        Integer limit = ConfigFile.purchaseLimit.get(commodityID);
-        String buyText = (limit != null) ? "&f&l购买(" + account.getCount(commodityID) + "/" + limit + ")" : "&f&l购买";
+        int limit = commodity.getLimit();
+        String buyText = (limit > 0) ? "&f&l购买(" + account.getMallCount(commodityID) + "/" + limit + ")" : "&f&l购买";
         components.add(new TextureComp(buyID)
                 .setText(buyText)
                 .setTexture("ui/common/button_normal_a.png")

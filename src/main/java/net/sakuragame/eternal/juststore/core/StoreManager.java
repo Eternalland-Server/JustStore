@@ -9,7 +9,6 @@ import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
-import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;

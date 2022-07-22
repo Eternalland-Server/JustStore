@@ -5,7 +5,6 @@ import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.JustStoreAPI;
 import net.sakuragame.eternal.juststore.commands.CommandPerms;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
-import net.sakuragame.eternal.juststore.ui.ScreenManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +28,7 @@ public class OpenCommand extends SubCommand {
             return;
         }
 
-        if (!JustStore.getMerchantManger().getMerchantIDs().contains(s2)) {
+        if (!JustStore.getShopManger().getMerchantIDs().contains(s2)) {
             sender.sendMessage(ConfigFile.prefix + "没有该商店");
             return;
         }

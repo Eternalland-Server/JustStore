@@ -21,15 +21,15 @@ import java.util.Map;
 
 public class ScreenManager {
 
-    public final static String Merchant_ID = "eternal_merchant";
+    public final static String Shop_ID = "eternal_shop";
     public final static String Store_ID = "eternal_store";
 
-    public static void openMerchant(Player player, String shopID) {
-        openMerchant(player, shopID, null);
+    public static void openShop(Player player, String shopID) {
+        openShop(player, shopID, null);
     }
 
-    public static void openMerchant(Player player, String id, String shelfID) {
-        Merchant merchant = JustStore.getMerchantManger().getMerchant(id);
+    public static void openShop(Player player, String id, String shelfID) {
+        Merchant merchant = JustStore.getShopManger().getMerchant(id);
         if (merchant == null) return;
 
         Shelf shelf = shelfID == null ? merchant.getShelf().values().stream().findFirst().get() : merchant.getShelf().get(shelfID);
@@ -49,7 +49,7 @@ public class ScreenManager {
 
         PacketSender.sendSyncPlaceholder(player, map);
         PacketSender.sendRunFunction(player, "default", "global.eternal_shop_category = '" + shelf.getID() + "';", false);
-        PacketSender.sendOpenGui(player, Merchant_ID);
+        PacketSender.sendOpenGui(player, Shop_ID);
     }
 
     public static void openStore(Player player, StoreType type) {

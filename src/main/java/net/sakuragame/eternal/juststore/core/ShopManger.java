@@ -2,13 +2,16 @@ package net.sakuragame.eternal.juststore.core;
 
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.core.merchant.*;
+import net.sakuragame.eternal.juststore.core.merchant.goods.BuyGoods;
+import net.sakuragame.eternal.juststore.core.merchant.goods.Goods;
+import net.sakuragame.eternal.juststore.core.merchant.goods.SellGoods;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.*;
 
-public class MerchantManger {
+public class ShopManger {
 
     private final JustStore plugin;
 
@@ -19,7 +22,7 @@ public class MerchantManger {
 
     private final Map<UUID, String> cache;
 
-    public MerchantManger(JustStore plugin) {
+    public ShopManger(JustStore plugin) {
         this.plugin = plugin;
         this.preset = new HashMap<>();
         this.merchants = new HashMap<>();
@@ -63,21 +66,20 @@ public class MerchantManger {
     public void registerPreset() {
         this.preset.put(TradeType.BUY, BuyGoods.class);
         this.preset.put(TradeType.SELL, SellGoods.class);
-        this.preset.put(TradeType.UPGRADE, UpgradeGoods.class);
     }
 
     public void loadMerchantFile() {
         this.merchants.clear();
 
-        File file = new File(plugin.getDataFolder(), "merchant/shop");
+        File file = new File(plugin.getDataFolder(), "shop/shop");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;
         Arrays.stream(files)
                 .filter(k -> k.getName().endsWith(".yml"))
                 .forEach(k -> {
-                    String id = k.getName().replace(".yml", "");
                     YamlConfiguration yaml = YamlConfiguration.loadConfiguration(k);
+                    String id = yaml.getString("__id__");
                     this.merchants.put(id, new Merchant(id, yaml));
                 });
     }
@@ -85,7 +87,7 @@ public class MerchantManger {
     public void loadGoodsFile() {
         this.goodsMap.clear();
 
-        File file = new File(plugin.getDataFolder(), "merchant/goods");
+        File file = new File(plugin.getDataFolder(), "shop/goods");
         File[] files = file.listFiles();
 
         if (files == null || files.length == 0) return;

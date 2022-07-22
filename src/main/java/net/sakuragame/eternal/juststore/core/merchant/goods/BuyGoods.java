@@ -1,12 +1,14 @@
-package net.sakuragame.eternal.juststore.core.merchant;
+package net.sakuragame.eternal.juststore.core.merchant.goods;
 
 import ink.ptms.zaphkiel.ZaphkielAPI;
 import net.sakuragame.eternal.gemseconomy.api.GemsEconomyAPI;
 import net.sakuragame.eternal.justmessage.api.MessageAPI;
-import net.sakuragame.eternal.juststore.api.event.MerchantTradeEvent;
+import net.sakuragame.eternal.juststore.api.event.ShopTradeEvent;
 import net.sakuragame.eternal.juststore.core.EnumCharge;
+import net.sakuragame.eternal.juststore.core.merchant.TradeType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.util.Utils;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +34,7 @@ public class BuyGoods extends Goods {
         double price = this.getPrice() * quantity;
 
         if (Utils.getEmptySlotCount(player) == 0) {
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1);
             player.sendMessage(ConfigFile.prefix + "交易前请确保背包内有空余的槽位");
             return;
         }
@@ -46,6 +49,7 @@ public class BuyGoods extends Goods {
 
         if (this.getConsume().size() != 0) {
             if (!Utils.checkItem(player, this.getConsume(quantity))) {
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1);
                 MessageAPI.sendActionTip(player, "&c&l购买失败，背包内材料不足");
                 return;
             }
@@ -55,6 +59,7 @@ public class BuyGoods extends Goods {
 
         ItemStack boughtGoods = ZaphkielAPI.INSTANCE.getItemStack(this.getItem(), player);
         if (boughtGoods == null) {
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1);
             player.sendMessage(" §c§l购买失败，请联系管理员");
             return;
         }
@@ -64,9 +69,10 @@ public class BuyGoods extends Goods {
         player.getInventory().addItem(boughtGoods);
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
-        player.sendMessage(ConfigFile.prefix + "你购买了 " + this.getName());
+        player.sendMessage(ConfigFile.prefix + "你购买了: §f" + this.getName());
+        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 0.6f, 1);
 
-        MerchantTradeEvent.Post postEvent = new MerchantTradeEvent.Post(player, this, quantity);
+        ShopTradeEvent.Post postEvent = new ShopTradeEvent.Post(player, this, quantity);
         postEvent.call();
     }
 }

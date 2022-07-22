@@ -11,7 +11,7 @@ public class JustStoreAPI {
     }
 
     public static void openMerchant(Player player, String shopID, String shelfID) {
-        ScreenManager.openMerchant(player, shopID, shelfID);
+        ScreenManager.openShop(player, shopID, shelfID);
     }
 
     public static void openStore(Player player, int id) {

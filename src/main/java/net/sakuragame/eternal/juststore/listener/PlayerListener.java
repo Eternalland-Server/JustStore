@@ -1,7 +1,7 @@
 package net.sakuragame.eternal.juststore.listener;
 
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.UserPurchaseData;
+import net.sakuragame.eternal.juststore.core.UserAccount;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,7 +34,7 @@ public class PlayerListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent e) {
         Player player = e.getPlayer();
 
-        UserPurchaseData account = JustStore.getUserManager().getAccount(player.getUniqueId());
+        UserAccount account = JustStore.getUserManager().getAccount(player.getUniqueId());
 
         if (account == null) {
             e.setResult(PlayerLoginEvent.Result.KICK_OTHER);
@@ -48,7 +48,7 @@ public class PlayerListener implements Listener {
         UUID uuid = player.getUniqueId();
 
         JustStore.getStoreManager().delCache(uuid);
-        JustStore.getMerchantManger().delCache(uuid);
+        JustStore.getShopManger().delCache(uuid);
         JustStore.getUserManager().removeAccount(uuid);
     }
 }

@@ -123,7 +123,7 @@ public class Utils {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        return calendar.getTimeInMillis() - System.currentTimeMillis();
+        return (calendar.getTimeInMillis() - System.currentTimeMillis()) / 1000;
     }
 
     public static int getEmptySlotCount(Player player) {

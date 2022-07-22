@@ -19,6 +19,7 @@ public class Commodity {
     private final int amount;
     private final EnumCharge charge;
     private final Double price;
+    private final int limit;
 
     public Commodity(String id, ConfigurationSection section) {
         this.id = id;
@@ -29,6 +30,12 @@ public class Commodity {
         this.amount = section.getInt("amount");
         this.charge = EnumCharge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price");
+        this.limit = section.getInt("limit", 0);
+    }
+
+    public boolean isSingle() {
+        if (this.limit > 0) return true;
+        return single;
     }
 
     public String formatPrice(Player player) {

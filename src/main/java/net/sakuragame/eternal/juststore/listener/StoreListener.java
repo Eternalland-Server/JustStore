@@ -8,11 +8,13 @@ import net.sakuragame.eternal.justmessage.api.event.quantity.QuantityBoxConfirmE
 import net.sakuragame.eternal.justmessage.screen.ui.QuantityScreen;
 import net.sakuragame.eternal.juststore.JustStore;
 import net.sakuragame.eternal.juststore.api.event.StoreTradeEvent;
-import net.sakuragame.eternal.juststore.core.UserPurchaseData;
+import net.sakuragame.eternal.juststore.core.UserAccount;
+import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.core.store.StoreType;
 import net.sakuragame.eternal.juststore.file.sub.ConfigFile;
 import net.sakuragame.eternal.juststore.ui.Operation;
 import net.sakuragame.eternal.juststore.ui.ScreenManager;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -93,46 +95,44 @@ public class StoreListener implements Listener {
     public void onPurchasePre(StoreTradeEvent.Pre e) {
         if (e.isCancelled()) return;
 
-        String id = e.getCommodity().getId();
-        Integer limit = ConfigFile.purchaseLimit.get(id);
+        Commodity commodity = e.getCommodity();
+        int limit = commodity.getLimit();
 
-        if (limit == null) return;
+        if (limit <= 0) return;
 
         Player player = e.getPlayer();
-        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+        UserAccount account = JustStore.getUserManager().getAccount(player);
 
         int amount = e.getQuantity();
-        int current = account.getCount(id);
+        int current = account.getMallCount(commodity.getId());
         if (current + amount <= limit) return;
 
         e.setCancelled(true);
-        if (current == limit) {
+        if (current >= limit) {
+            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.6f, 1);
             MessageAPI.sendActionTip(player, "&c&l该商品今日购买次数已达到上限!");
-        }
-        else {
-            MessageAPI.sendActionTip(player, "&c&l该商品你还能购买 &a&l" + (limit - current) + " &c&l次");
         }
     }
 
     @EventHandler
     public void onPurchasePost(StoreTradeEvent.Post e) {
-        String id = e.getCommodity().getId();
-        Integer limit = ConfigFile.purchaseLimit.get(id);
-
-        if (limit == null) return;
-
         Player player = e.getPlayer();
-        UserPurchaseData account = JustStore.getUserManager().getAccount(player);
+        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 0.6f, 1);
 
-        int count = account.addRecord(id, e.getQuantity());
+        Commodity commodity = e.getCommodity();
+        int limit = commodity.getLimit();
 
-        updateButton(player, id, count, limit);
-    }
+        if (limit <= 0) return;
 
-    private void updateButton(Player player, String id, int current, int limit) {
-        String buttonID = id + "_b";
-        String text = "&f&l购买(" + current + "/" + limit + ")";
-        PacketSender.sendRunFunction(player, ScreenManager.Store_ID, "func.Component_Set('" + buttonID + "', 'text', '" + text + "');", false);
+        UserAccount account = JustStore.getUserManager().getAccount(player);
+        int count = account.addMallCount(commodity.getId(), e.getQuantity());
+
+        PacketSender.sendRunFunction(
+                player,
+                ScreenManager.Store_ID,
+                "func.Component_Set('" + commodity.getId() + "_b', 'text', '&f&l购买(" + count + "/" + limit + ")');",
+                false
+        );
     }
 
 }

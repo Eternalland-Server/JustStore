@@ -1,10 +1,10 @@
 package net.sakuragame.eternal.juststore.api.event;
 
 import lombok.Getter;
-import net.sakuragame.eternal.juststore.core.merchant.Goods;
+import net.sakuragame.eternal.juststore.core.merchant.goods.Goods;
 import org.bukkit.entity.Player;
 
-public class MerchantTradeEvent {
+public class ShopTradeEvent {
 
     @Getter
     public static class Pre extends JustEvent {

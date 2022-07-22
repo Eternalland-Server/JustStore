@@ -31,12 +31,12 @@ public class FileManager extends JustConfiguration {
         ConfigFile.init();
         MessageFile.init();
 
-        initMerchant();
-        initStore();
+        initShop();
+        initMall();
     }
 
-    private void initMerchant() {
-        File file = new File(plugin.getDataFolder(), "merchant");
+    private void initShop() {
+        File file = new File(plugin.getDataFolder(), "shop");
         if (!file.mkdirs()) return;
 
         File shop = new File(file, "shop/example.yml");
@@ -50,7 +50,7 @@ public class FileManager extends JustConfiguration {
         }
     }
 
-    private void initStore() {
+    private void initMall() {
         File file = new File(plugin.getDataFolder(), "mall");
         if (!file.mkdirs()) return;
 

@@ -1,8 +1,9 @@
-package net.sakuragame.eternal.juststore.core.merchant;
+package net.sakuragame.eternal.juststore.core.merchant.goods;
 
 import com.taylorswiftcn.justwei.util.MegumiUtil;
 import lombok.Getter;
 import net.sakuragame.eternal.juststore.core.EnumCharge;
+import net.sakuragame.eternal.juststore.core.merchant.TradeType;
 import net.sakuragame.eternal.juststore.util.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ public abstract class Goods {
     private final int amount;
     private final EnumCharge charge;
     private final double price;
+    private final int limit;
     private final Map<String, Integer> consume;
 
     public Goods(String ID, TradeType type, ConfigurationSection section) {
@@ -32,13 +34,19 @@ public abstract class Goods {
         this.amount = section.getInt("amount", 1);
         this.charge = EnumCharge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price", 0);
+        this.limit = section.getInt("limit", 0);
         this.consume = new LinkedHashMap<>();
         for (String key : section.getStringList("consume")) {
-            String[] args = key.split(":", 2);
+            String[] args = key.split(" ", 2);
             String consumeID = args[0];
             int amount = Integer.parseInt(args[1]);
             consume.put(consumeID, amount);
         }
+    }
+
+    public boolean isSingle() {
+        if (this.limit > 0) return true;
+        return single;
     }
 
     public abstract void trade(Player player);
@@ -50,7 +58,7 @@ public abstract class Goods {
     }
 
     public String formatPrice() {
-        if (this.charge == EnumCharge.NONE) return "&f不收费";
+        if (this.charge == EnumCharge.NONE) return "&f免费";
 
         String parse = Utils.unitFormatting(this.getPrice());
         return this.charge.getSymbol() + parse + charge.getCurrency().getDisplay();

@@ -7,7 +7,7 @@ import com.taylorswiftcn.megumi.uifactory.generate.ui.screen.ScreenUI;
 import net.sakuragame.eternal.dragoncore.config.FolderType;
 import net.sakuragame.eternal.dragoncore.network.PacketSender;
 import net.sakuragame.eternal.juststore.JustStore;
-import net.sakuragame.eternal.juststore.core.merchant.Goods;
+import net.sakuragame.eternal.juststore.core.merchant.goods.Goods;
 import net.sakuragame.eternal.juststore.core.merchant.Shelf;
 import net.sakuragame.eternal.juststore.core.store.Commodity;
 import net.sakuragame.eternal.juststore.ui.LayoutHandler;
@@ -54,7 +54,7 @@ public class CommodityComp {
                 .setThumb((TextureComp) thumb);
 
         for (int i = 0; i < size; i++) {
-            Goods goods = JustStore.getMerchantManger().getGoods(goodsList.get(i));
+            Goods goods = JustStore.getShopManger().getGoods(goodsList.get(i));
             if (goods == null) continue;
             comp.addContent(LayoutHandler.build(player, i, goods));
         }

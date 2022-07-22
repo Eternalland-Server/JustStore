@@ -16,7 +16,6 @@ public class ConfigFile {
 
     public static List<String> tip;
     public static Map<String, Double> discount;
-    public static Map<String, Integer> purchaseLimit;
 
     public static void init() {
         config = JustStore.getFileManager().getConfig();
@@ -24,7 +23,6 @@ public class ConfigFile {
         prefix = getString("Prefix");
         tip = getStringList("tip");
         loadDiscount();
-        loadPurchaseLimit();
     }
 
     private static String getString(String path) {
@@ -44,18 +42,6 @@ public class ConfigFile {
         for (String key : section.getKeys(false)) {
             double percent = section.getDouble(key);
             discount.put(key, percent);
-        }
-    }
-
-    private static void loadPurchaseLimit() {
-        purchaseLimit = new HashMap<>();
-
-        ConfigurationSection section = config.getConfigurationSection("purchase-limit");
-        if (section == null) return;
-
-        for (String key : section.getKeys(false)) {
-            int amount = section.getInt(key);
-            purchaseLimit.put(key, amount);
         }
     }
 }

@@ -8,24 +8,25 @@ import java.util.UUID;
 
 public class UserManager {
 
-    private final HashMap<UUID, UserPurchaseData> account;
+    private final HashMap<UUID, UserAccount> account;
 
     public UserManager() {
         this.account = new HashMap<>();
     }
 
     public void loadAccount(UUID uuid) {
-        UserPurchaseData data = new UserPurchaseData(uuid);
-        data.setRecords(JustStore.getStorageManager().getUserData(uuid));
+        UserAccount data = new UserAccount(uuid);
+        data.setMallRecord(JustStore.getStorageManager().getMallRecord(uuid));
+        data.setShopRecord(JustStore.getStorageManager().getShopRecord(uuid));
 
         account.put(uuid, data);
     }
 
-    public UserPurchaseData getAccount(Player player) {
+    public UserAccount getAccount(Player player) {
         return getAccount(player.getUniqueId());
     }
 
-    public UserPurchaseData getAccount(UUID uuid) {
+    public UserAccount getAccount(UUID uuid) {
         return account.get(uuid);
     }
 
