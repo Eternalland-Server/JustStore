@@ -30,7 +30,7 @@ public abstract class Goods {
         this.type = type;
         this.item = section.getString("item");
         this.name = MegumiUtil.onReplace(section.getString("name"));
-        this.single = section.getBoolean("single");
+        this.single = section.getBoolean("single", true);
         this.amount = section.getInt("amount", 1);
         this.charge = EnumCharge.valueOf(section.getString("charge").toUpperCase());
         this.price = section.getDouble("price", 0);

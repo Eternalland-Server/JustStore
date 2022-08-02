@@ -69,7 +69,7 @@ public class BuyGoods extends Goods {
         player.getInventory().addItem(boughtGoods);
 
         MessageAPI.sendActionTip(player, "&a&l购买成功！");
-        player.sendMessage(ConfigFile.prefix + "你购买了: §f" + this.getName());
+        player.sendMessage(ConfigFile.prefix + "你购买了: §f" + this.getName() + (quantity == 1 ? "" : "*" + quantity));
         player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 0.6f, 1);
 
         ShopTradeEvent.Post postEvent = new ShopTradeEvent.Post(player, this, quantity);

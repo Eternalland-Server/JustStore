@@ -50,13 +50,11 @@ public class ShopListener implements Listener {
             Goods goods = JustStore.getShopManger().getGoods(goodsID);
             if (goods == null) return;
 
-            if (goods instanceof BuyGoods) {
-                if (!goods.isSingle()) {
-                    JustStore.getShopManger().addCache(player.getUniqueId(), goodsID);
-                    QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l购买数量", "&7" + goods.getName());
-                    box.open(player, true);
-                    return;
-                }
+            if (!goods.isSingle()) {
+                JustStore.getShopManger().addCache(player.getUniqueId(), goodsID);
+                QuantityBox box = new QuantityBox(Operation.ShopOrder.name(), "&6&l交易数量", "&7" + goods.getName());
+                box.open(player, true);
+                return;
             }
 
             this.trade(player, goods, 1);
